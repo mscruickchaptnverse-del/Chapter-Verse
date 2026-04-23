@@ -1,0 +1,98 @@
+<div class="relative z-0 flex min-h-screen flex-col font-sans text-[15px] text-cv-grey antialiased">
+  <header
+    class="border-b border-cv-green/10 bg-cv-shell/80 px-[clamp(1.15rem,3vw,2.25rem)] py-[1.125rem] backdrop-blur-sm"
+  >
+    <div class="mx-auto flex w-full max-w-[1120px] items-center justify-between gap-3">
+      <a
+        routerLink="/"
+        class="font-serif text-xl font-semibold tracking-wide text-cv-ink no-underline md:text-2xl"
+        >Chapter &amp; Verse</a
+      >
+      <a
+        routerLink="/contact"
+        class="text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-cv-grey no-underline transition hover:text-cv-ink"
+        >Contact</a
+      >
+    </div>
+  </header>
+
+  <main
+    class="mx-auto flex w-full max-w-[1120px] flex-1 flex-col items-center justify-center px-[clamp(1.25rem,4vw,2.5rem)] pb-16 pt-[clamp(2rem,6vh,3rem)]"
+  >
+    <section
+      class="w-full max-w-[26rem] rounded-[10px] bg-white p-8 shadow-contact"
+      aria-labelledby="sign-in-heading"
+    >
+      <h1
+        id="sign-in-heading"
+        class="font-serif mb-1 text-center text-[1.65rem] font-semibold italic text-cv-ink"
+      >
+        Sign in
+      </h1>
+      <p class="mb-8 text-center text-[0.88rem] leading-relaxed text-cv-grey">
+        Editor access. Use the account from your Firebase project.
+      </p>
+
+      <form
+        #signInForm
+        class="flex flex-col gap-6"
+        novalidate
+        (submit)="onSubmitForm($event)"
+      >
+        <div
+          *ngIf="errorMessage"
+          class="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-center text-[0.88rem] leading-snug text-red-900"
+          role="alert"
+          aria-live="assertive"
+        >
+          {{ errorMessage }}
+        </div>
+
+        <div class="flex flex-col gap-[0.45rem]">
+          <label class="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cv-muted" for="signin-email"
+            >Email</label
+          >
+          <input
+            id="signin-email"
+            name="email"
+            type="email"
+            autocomplete="username"
+            class="border-0 border-b border-cv-grey/45 bg-transparent py-[0.55rem] font-sans text-[0.95rem] text-neutral-800 outline-none transition placeholder:text-cv-placeholder focus:border-cv-green"
+            placeholder="you@example.com"
+          />
+        </div>
+
+        <div class="flex flex-col gap-[0.45rem]">
+          <label
+            class="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cv-muted"
+            for="signin-password"
+            >Password</label
+          >
+          <input
+            id="signin-password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            class="border-0 border-b border-cv-grey/45 bg-transparent py-[0.55rem] font-sans text-[0.95rem] text-neutral-800 outline-none transition placeholder:text-cv-placeholder focus:border-cv-green"
+            placeholder="••••••••"
+          />
+        </div>
+
+        <div class="flex justify-center pt-1">
+          <button
+            type="button"
+            class="inline-flex cursor-pointer items-center gap-2 rounded-md border-0 bg-cv-green px-[1.35rem] py-[0.85rem] font-sans text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+            [disabled]="submitting"
+            (click)="onSignInClick(signInForm)"
+          >
+            {{ submitting ? 'Signing in…' : 'Sign in' }}
+          </button>
+        </div>
+      </form>
+
+      <p class="mt-8 text-center text-[0.8rem] text-cv-muted">
+        <a routerLink="/" class="font-semibold text-cv-green no-underline hover:underline">Back to home</a>
+      </p>
+    </section>
+  </main>
+</div>

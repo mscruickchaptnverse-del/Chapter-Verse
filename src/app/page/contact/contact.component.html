@@ -1,0 +1,244 @@
+<div class="relative z-0 flex min-h-screen flex-col font-sans text-[15px] text-cv-grey antialiased">
+  <header
+    class="border-b border-cv-green/10 bg-cv-shell/80 px-[clamp(1.15rem,3vw,2.25rem)] py-[1.125rem] backdrop-blur-sm"
+  >
+    <div class="mx-auto flex w-full max-w-[1120px] items-center justify-between gap-3">
+      <a
+        routerLink="/"
+        class="justify-self-start font-serif text-xl font-semibold tracking-wide text-cv-ink no-underline md:text-2xl"
+        >Chapter &amp; Verse</a
+      >
+      <nav
+        class="relative hidden items-center justify-center gap-x-6 gap-y-1.5 pb-2 md:flex"
+        aria-label="Primary"
+      >
+      <a
+        #navHome
+        routerLink="/"
+        class="pb-0.5 text-[0.68rem] font-semibold uppercase tracking-[0.14em] no-underline transition hover:text-cv-ink"
+        [class.text-cv-ink]="activeNav === 'home'"
+        [class.text-cv-grey]="activeNav !== 'home'"
+        >Home</a
+      >
+      
+      <a
+        #navContact
+        routerLink="/contact"
+        class="pb-0.5 text-[0.68rem] font-semibold uppercase tracking-[0.14em] no-underline transition hover:text-cv-ink"
+        [class.text-cv-ink]="activeNav === 'contact'"
+        [class.text-cv-grey]="activeNav !== 'contact'"
+        >Contact</a
+      >
+      <span
+        class="pointer-events-none absolute bottom-0 h-[3px] rounded-full bg-gradient-to-r from-cv-sage-accent/70 via-white/70 to-cv-sage-accent/70 shadow-[0_0_0_1px_rgba(255,255,255,0.45),0_2px_8px_rgba(129,152,130,0.35)] backdrop-blur-md transition-[left,width,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+        [class.opacity-0]="!indicatorReady"
+        [class.opacity-100]="indicatorReady"
+        [style.left.px]="indicatorLeft"
+        [style.width.px]="indicatorWidth"
+      ></span>
+      </nav>
+      <button
+        type="button"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-cv-sage-accent/25 bg-white/40 text-cv-ink transition hover:bg-white/60 md:hidden"
+        aria-label="Toggle navigation"
+        [attr.aria-expanded]="mobileMenuOpen"
+        (click)="toggleMobileMenu()"
+      >
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path
+            [attr.d]="mobileMenuOpen ? 'M6 6l12 12M18 6 6 18' : 'M4 7h16M4 12h16M4 17h16'"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div
+    class="fixed inset-0 z-[70] transition-opacity duration-300 md:hidden"
+    [class.opacity-0]="!mobileMenuOpen"
+    [class.opacity-100]="mobileMenuOpen"
+    [class.pointer-events-none]="!mobileMenuOpen"
+    [class.pointer-events-auto]="mobileMenuOpen"
+    (click)="closeMobileMenu()"
+  >
+    <div
+      class="absolute inset-0 bg-black/20 backdrop-blur-[1px] transition-opacity duration-300"
+      [class.opacity-0]="!mobileMenuOpen"
+      [class.opacity-100]="mobileMenuOpen"
+    ></div>
+    <nav
+      class="absolute left-0 top-0 h-full w-[min(82vw,22rem)] border-r border-cv-sage-accent/20 bg-cv-shell/95 px-6 pb-8 pt-24 shadow-2xl backdrop-blur-md transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+      [class.-translate-x-full]="!mobileMenuOpen"
+      [class.translate-x-0]="mobileMenuOpen"
+      aria-label="Mobile primary"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="flex flex-col gap-4 text-sm font-semibold">
+        <a
+          routerLink="/"
+          class="w-fit border-b-2 pb-1 transition hover:text-cv-ink"
+          [class.border-cv-ink]="activeNav === 'home'"
+          [class.border-transparent]="activeNav !== 'home'"
+          [class.text-cv-ink]="activeNav === 'home'"
+          [class.text-cv-grey]="activeNav !== 'home'"
+          (click)="closeMobileMenu()"
+          >Home</a
+        >
+        <a
+          routerLink="/contact"
+          class="w-fit border-b-2 pb-1 transition hover:text-cv-ink"
+          [class.border-cv-ink]="activeNav === 'contact'"
+          [class.border-transparent]="activeNav !== 'contact'"
+          [class.text-cv-ink]="activeNav === 'contact'"
+          [class.text-cv-grey]="activeNav !== 'contact'"
+          (click)="closeMobileMenu()"
+          >Contact</a
+        >
+      </div>
+    </nav>
+  </div>
+
+  <main
+    class="mx-auto w-full max-w-[1120px] flex-1 px-[clamp(1.25rem,4vw,2.5rem)] pb-[3.25rem] pt-[clamp(2rem,6vh,3.75rem)]"
+  >
+    <section class="mb-7 text-center" aria-labelledby="contact-hero-heading">
+      <div class="mb-3.5 flex justify-center">
+        <h1 id="contact-hero-heading" class="font-serif m-0 text-[clamp(1.75rem,3.8vw,2.35rem)] font-semibold italic leading-tight text-cv-ink">
+          Contact Us
+        </h1>
+      </div>
+      <p class="mx-auto max-w-[38rem] text-[0.95rem] leading-relaxed text-cv-grey">
+        We&apos;d love to hear from you. Whether it is a query about our fleet or a bespoke itinerary request.
+      </p>
+    </section>
+
+    <section
+      class="mx-auto grid w-full max-w-[56rem] grid-cols-1 gap-[clamp(1.75rem,4vw,3rem)] md:grid-cols-2"
+      aria-labelledby="concierge-heading"
+    >
+      <aside class="rounded-[10px] bg-cv-sage p-8 pb-9">
+        <h2 id="concierge-heading" class="font-serif mb-4 text-[1.65rem] font-semibold italic text-cv-ink">
+          The Concierge
+        </h2>
+        <p class="mb-7 text-[0.92rem] leading-relaxed text-cv-grey">
+          We aim to respond within 24&ndash;48 hours.<br />
+          <a
+            href="mailto:concierge@chapterverse.com"
+            class="font-semibold text-cv-ink no-underline hover:underline"
+            >concierge@chapterverse.com</a
+          >
+        </p>
+        <ul class="m-0 flex list-none flex-col gap-4 p-0">
+          <li class="flex items-start gap-2.5 text-[0.88rem] leading-snug text-cv-grey">
+            <svg class="mt-0.5 h-[1.1rem] w-[1.1rem] shrink-0 text-cv-muted" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"
+              />
+            </svg>
+            <span>113 S. Perry Street, Suite 206 Lawrenceville, GA, 30046</span>
+          </li>
+          <li class="flex items-start gap-2.5 text-[0.88rem] leading-snug text-cv-grey">
+            <svg class="mt-0.5 h-[1.1rem] w-[1.1rem] shrink-0 text-cv-muted" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C9.61 21 3 14.39 3 6a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"
+              />
+            </svg>
+            <a href="tel:+18435550192" class="text-inherit no-underline hover:underline">+1 (843) 555-0192</a>
+          </li>
+        </ul>
+      </aside>
+
+      <form
+        class="mx-auto flex w-[min(100%,26rem)] flex-col gap-6 rounded-[10px] bg-white p-8 pb-7 shadow-contact"
+        (submit)="onSubmit($event)"
+      >
+        <div
+          *ngIf="submitStatus === 'success'"
+          class="rounded-md border border-cv-green/35 bg-cv-sage/40 px-4 py-3 text-center text-[0.9rem] leading-snug text-cv-ink"
+          role="status"
+          aria-live="polite"
+        >
+          Thank you — your message was sent. We&apos;ll reply within 24&ndash;48 hours.
+        </div>
+        <div
+          *ngIf="submitStatus === 'error'"
+          class="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-center text-[0.88rem] leading-snug text-red-900"
+          role="alert"
+          aria-live="assertive"
+        >
+          {{ submitErrorDetail }}
+        </div>
+        <div class="flex flex-col gap-[0.45rem]">
+          <label class="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cv-muted" for="contact-name"
+            >Full name</label
+          >
+          <input
+            id="contact-name"
+            name="name"
+            type="text"
+            class="min-h-0 resize-y border-0 border-b border-cv-grey/45 bg-transparent py-[0.55rem] font-sans text-[0.95rem] text-neutral-800 outline-none transition placeholder:text-cv-placeholder focus:border-cv-green"
+            autocomplete="name"
+            placeholder="Julian Sterling"
+            [value]="fullName"
+            (input)="onNameInput($event)"
+          />
+        </div>
+        <div class="flex flex-col gap-[0.45rem]">
+          <label class="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cv-muted" for="contact-email"
+            >Email address</label
+          >
+          <input
+            id="contact-email"
+            name="email"
+            type="email"
+            class="border-0 border-b border-cv-grey/45 bg-transparent py-[0.55rem] font-sans text-[0.95rem] text-neutral-800 outline-none transition placeholder:text-cv-placeholder focus:border-cv-green"
+            autocomplete="email"
+            placeholder="julian@example.com"
+            [value]="email"
+            (input)="onEmailInput($event)"
+          />
+        </div>
+        <div class="flex flex-1 flex-col gap-[0.45rem]">
+          <label class="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cv-muted" for="contact-message"
+            >Your message</label
+          >
+          <textarea
+            id="contact-message"
+            name="message"
+            class="min-h-[8.5rem] resize-y border-0 border-b border-cv-grey/45 bg-transparent py-[0.55rem] font-sans text-[0.95rem] leading-relaxed text-neutral-800 outline-none transition placeholder:text-cv-placeholder focus:border-cv-green"
+            rows="5"
+            placeholder="Tell us about your ideal voyage..."
+            [value]="message"
+            (input)="onMessageInput($event)"
+          ></textarea>
+        </div>
+        <div class="flex justify-center pt-1">
+          <button
+            type="submit"
+            class="inline-flex cursor-pointer items-center gap-2 rounded-md border-0 bg-cv-green px-[1.35rem] py-[0.85rem] font-sans text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+            [disabled]="submitStatus === 'sending'"
+          >
+            {{ submitStatus === 'sending' ? 'Sending…' : 'Send inquiry' }}
+            <svg class="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M7 17 17 7M10 7h7v7"
+              />
+            </svg>
+          </button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <app-site-footer></app-site-footer>
+</div>

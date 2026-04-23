@@ -1,0 +1,309 @@
+<div class="min-h-screen bg-cv-page/70 text-cv-charcoal">
+  <main class="mx-auto w-full max-w-[1250px] px-5 py-6 md:px-8">
+    <section class="rounded-xl border border-cv-sage-accent/20 bg-cv-cream/85 p-4 shadow-sm backdrop-blur-sm md:p-6">
+      <header class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 class="font-serif text-3xl italic text-cv-green">Editor&apos;s Console</h1>
+          <p class="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-cv-muted">
+            Curate the digital presence
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button
+            type="button"
+            class="rounded-md border border-cv-sage-accent/35 px-4 py-2 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-cv-grey transition hover:bg-white/50"
+            (click)="logout()"
+          >
+            Sign out
+          </button>
+          <button
+            type="button"
+            class="rounded-md border border-cv-sage-accent/35 px-4 py-2 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-cv-grey transition hover:bg-white/50"
+            (click)="discardChanges()"
+          >
+            Discard
+          </button>
+          <button
+            type="button"
+            class="rounded-md bg-cv-green px-5 py-2 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-white shadow-sm transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+            [disabled]="!hasChanges"
+            (click)="publishChanges()"
+          >
+            Publish Changes
+          </button>
+        </div>
+      </header>
+
+      <div class="mt-4 border border-cv-sage-accent/15 bg-white/90 px-3 py-2 backdrop-blur-sm">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="flex items-center gap-1 pr-2">
+            <button
+              type="button"
+              class="rounded px-2 py-1 text-sm font-semibold transition"
+              [ngClass]="{ 'bg-cv-green/10': isBold }"
+              [class.text-cv-green]="isBold"
+              [class.text-cv-grey]="!isBold"
+              (click)="toggleBold()"
+            >
+              B
+            </button>
+            <button
+              type="button"
+              class="rounded px-2 py-1 text-sm italic transition"
+              [ngClass]="{ 'bg-cv-green/10': isItalic }"
+              [class.text-cv-green]="isItalic"
+              [class.text-cv-grey]="!isItalic"
+              (click)="toggleItalic()"
+            >
+              I
+            </button>
+            <button
+              type="button"
+              class="rounded px-2 py-1 text-sm underline transition"
+              [ngClass]="{ 'bg-cv-green/10': isUnderline }"
+              [class.text-cv-green]="isUnderline"
+              [class.text-cv-grey]="!isUnderline"
+              (click)="toggleUnderline()"
+            >
+              U
+            </button>
+            </div>
+
+            <div class="flex items-center gap-2 border-l border-cv-sage-accent/20 pl-3">
+            <select
+              class="rounded border border-cv-sage-accent/25 bg-white px-2 py-1 text-[0.68rem] uppercase tracking-[0.12em] text-cv-grey"
+              (change)="updateFont($event)"
+            >
+              <option>Newsreader</option>
+              <option>Inter</option>
+              <option>Playfair Display</option>
+            </select>
+            <select
+              class="rounded border border-cv-sage-accent/25 bg-white px-2 py-1 text-[0.68rem] text-cv-grey"
+              (change)="updateSize($event)"
+            >
+              <option>14px</option>
+              <option selected>16px</option>
+              <option>18px</option>
+              <option>24px</option>
+            </select>
+            </div>
+
+            <div class="flex items-center gap-1 border-l border-cv-sage-accent/20 pl-3">
+              <button
+                type="button"
+                class="rounded px-2 py-1 text-sm transition"
+                [ngClass]="{ 'bg-cv-green/10': isUnderline }"
+                [class.text-cv-green]="isUnderline"
+                [class.text-cv-grey]="!isUnderline"
+                (click)="toggleUnderline()"
+                aria-label="Text color accent"
+              >
+                A
+              </button>
+            </div>
+
+            <div class="flex items-center gap-1 border-l border-cv-sage-accent/20 pl-3">
+            <button
+              type="button"
+              class="rounded px-2 py-1 text-sm transition"
+              [ngClass]="{ 'bg-cv-green/10': textAlign==='left' }"
+              [class.text-cv-green]="textAlign==='left'"
+              [class.text-cv-grey]="textAlign!=='left'"
+              (click)="setTextAlign('left')"
+              aria-label="Align left"
+            >
+              ☰
+            </button>
+            <button
+              type="button"
+              class="rounded px-2 py-1 text-sm transition"
+              [ngClass]="{ 'bg-cv-green/10': textAlign==='center' }"
+              [class.text-cv-green]="textAlign==='center'"
+              [class.text-cv-grey]="textAlign!=='center'"
+              (click)="setTextAlign('center')"
+              aria-label="Align center"
+            >
+              ≡
+            </button>
+            <button
+              type="button"
+              class="rounded px-2 py-1 text-sm transition"
+              [ngClass]="{ 'bg-cv-green/10': textAlign==='right' }"
+              [class.text-cv-green]="textAlign==='right'"
+              [class.text-cv-grey]="textAlign!=='right'"
+              (click)="setTextAlign('right')"
+              aria-label="Align right"
+            >
+              ☷
+            </button>
+            </div>
+
+            <div class="flex items-center gap-1 border-l border-cv-sage-accent/20 pl-3">
+              <button type="button" class="rounded px-2 py-1 text-sm text-cv-grey transition hover:bg-cv-green/10 hover:text-cv-green" aria-label="Bullet list">•</button>
+              <button type="button" class="rounded px-2 py-1 text-sm text-cv-grey transition hover:bg-cv-green/10 hover:text-cv-green" aria-label="Numbered list">1.</button>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1 border-l border-cv-sage-accent/20 pl-3">
+            <button type="button" class="rounded px-2 py-1 text-sm text-cv-grey transition hover:bg-cv-green/10 hover:text-cv-green" aria-label="Undo">↺</button>
+            <button type="button" class="rounded px-2 py-1 text-sm text-cv-grey transition hover:bg-cv-green/10 hover:text-cv-green" aria-label="Redo">↻</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5 grid gap-4 md:grid-cols-2">
+        <article class="rounded-lg border border-cv-sage-accent/20 bg-cv-shell/70 p-4">
+          <h2 class="mb-4 font-serif text-xl text-cv-green">Main Headline</h2>
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Headline</label>
+          <input
+            class="mb-3 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [ngClass]="previewClassMap"
+            [style.fontSize]="selectedSize"
+            [value]="form.heroTitleTop + ' ' + form.heroTitleBottom"
+            (input)="onInput('heroTitleTop', $event)"
+          />
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Subtext</label>
+          <textarea
+            rows="3"
+            class="w-full resize-y border border-cv-grey/25 bg-white/70 p-2 text-sm text-cv-grey outline-none focus:border-cv-green"
+            [ngClass]="previewClassMap"
+            [style.fontSize]="selectedSize"
+            [value]="form.heroBody"
+            (input)="onInput('heroBody', $event)"
+          ></textarea>
+          <label class="mb-1 mt-3 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">CTA Label</label>
+          <input
+            class="w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [value]="form.primaryCta"
+            (input)="onInput('primaryCta', $event)"
+          />
+        </article>
+
+        <article class="rounded-lg border border-cv-sage-accent/20 bg-cv-shell/70 p-4">
+          <h2 class="mb-4 font-serif text-xl text-cv-green">Our Story</h2>
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Narrative headline</label>
+          <input
+            class="mb-3 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [value]="form.philosophyTitle"
+            (input)="onInput('philosophyTitle', $event)"
+          />
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Narrative text</label>
+          <textarea
+            rows="5"
+            class="w-full resize-y border border-cv-grey/25 bg-white/70 p-2 text-sm text-cv-grey outline-none focus:border-cv-green"
+            [value]="form.philosophyBody"
+            (input)="onInput('philosophyBody', $event)"
+          ></textarea>
+        </article>
+      </div>
+
+      <section class="mt-6 rounded-lg border border-cv-sage-accent/20 bg-cv-shell/70 p-4">
+        <h2 class="mb-4 font-serif text-xl text-cv-green">Values &amp; Ethos</h2>
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <article class="rounded-md border border-cv-sage-accent/20 bg-white p-3">
+            <p class="text-[0.52rem] uppercase tracking-[0.16em] text-cv-muted">Card Title</p>
+            <p class="mt-1 text-sm font-semibold text-cv-charcoal">Practicality Over Trends</p>
+            <p class="mt-2 text-xs text-cv-grey">Functional design that honors your time and space.</p>
+          </article>
+          <article class="rounded-md border border-cv-sage-accent/20 bg-white p-3">
+            <p class="text-[0.52rem] uppercase tracking-[0.16em] text-cv-muted">Card Title</p>
+            <p class="mt-1 text-sm font-semibold text-cv-charcoal">Reliability You Can Trust</p>
+            <p class="mt-2 text-xs text-cv-grey">Built with artisanal integrity to accompany your legacy.</p>
+          </article>
+          <article class="rounded-md border border-cv-sage-accent/20 bg-white p-3">
+            <p class="text-[0.52rem] uppercase tracking-[0.16em] text-cv-muted">Card Title</p>
+            <p class="mt-1 text-sm font-semibold text-cv-charcoal">Simple, Thoughtful Living</p>
+            <p class="mt-2 text-xs text-cv-grey">Curated essentials that eliminate clutter and foster ease.</p>
+          </article>
+          <article class="rounded-md border border-cv-sage-accent/20 bg-white p-3">
+            <p class="text-[0.52rem] uppercase tracking-[0.16em] text-cv-muted">Card Title</p>
+            <p class="mt-1 text-sm font-semibold text-cv-charcoal">Designed for Real Life</p>
+            <p class="mt-2 text-xs text-cv-grey">Anticipating modern femininity from quiet mornings to full schedules.</p>
+          </article>
+        </div>
+      </section>
+
+      <div class="mt-6 grid gap-4 md:grid-cols-2">
+        <article class="rounded-lg border border-cv-sage-accent/20 bg-cv-shell/70 p-4">
+          <h2 class="mb-3 font-serif text-xl text-cv-green">Our Promise</h2>
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Quote text</label>
+          <textarea
+            rows="4"
+            class="w-full resize-y border border-cv-grey/25 bg-white/70 p-2 text-sm italic text-cv-charcoal outline-none focus:border-cv-green"
+            [value]="form.philosophyBody"
+            (input)="onInput('philosophyBody', $event)"
+          ></textarea>
+          <label class="mb-1 mt-3 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Attribution</label>
+          <input
+            class="w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            value="Chapter & Verse Editorial Board"
+            readonly
+          />
+        </article>
+
+        <article class="rounded-lg border border-cv-sage-accent/20 bg-cv-shell/70 p-4">
+          <h2 class="mb-3 font-serif text-xl text-cv-green">Contact CTA Section</h2>
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Headline</label>
+          <input
+            class="mb-3 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [value]="form.ctaTitle"
+            (input)="onInput('ctaTitle', $event)"
+          />
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Button Label</label>
+          <input
+            class="w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [value]="form.primaryCta"
+            (input)="onInput('primaryCta', $event)"
+          />
+        </article>
+      </div>
+
+      <section class="mt-6 rounded-lg border border-cv-sage-accent/20 bg-cv-shell/70 p-4">
+        <div class="mb-3 flex items-center justify-between">
+          <h2 class="font-serif text-xl text-cv-green">Administrative Access</h2>
+          <button type="button" class="rounded-md bg-cv-green px-3 py-1.5 text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-white">
+            + Add User
+          </button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[560px] border-collapse text-sm">
+            <thead>
+              <tr class="border-b border-cv-sage-accent/20 text-left text-[0.62rem] uppercase tracking-[0.16em] text-cv-muted">
+                <th class="px-2 py-2">User</th>
+                <th class="px-2 py-2">Email Address</th>
+                <th class="px-2 py-2">Role</th>
+                <th class="px-2 py-2 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-cv-sage-accent/15">
+                <td class="px-2 py-3 text-cv-charcoal">JT &nbsp; Julian Thorne</td>
+                <td class="px-2 py-3 text-cv-grey">julian.thorne@chapterverse.com</td>
+                <td class="px-2 py-3 text-cv-green">Owner</td>
+                <td class="px-2 py-3 text-right text-cv-muted">⌫</td>
+              </tr>
+              <tr class="border-b border-cv-sage-accent/15">
+                <td class="px-2 py-3 text-cv-charcoal">EH &nbsp; Elena Hayes</td>
+                <td class="px-2 py-3 text-cv-grey">elena.h@chapterverse.com</td>
+                <td class="px-2 py-3 text-cv-grey">Editor</td>
+                <td class="px-2 py-3 text-right text-cv-muted">⌫</td>
+              </tr>
+              <tr>
+                <td class="px-2 py-3 text-cv-charcoal">MS &nbsp; Marcus Sterling</td>
+                <td class="px-2 py-3 text-cv-grey">m.sterling@chapterverse.com</td>
+                <td class="px-2 py-3 text-cv-grey">Editor</td>
+                <td class="px-2 py-3 text-right text-cv-muted">⌫</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <p *ngIf="saveMessage" class="mt-3 text-xs text-cv-muted">{{ saveMessage }}</p>
+    </section>
+  </main>
+
+  <app-site-footer></app-site-footer>
+</div>

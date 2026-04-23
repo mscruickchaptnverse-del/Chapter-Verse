@@ -1,0 +1,276 @@
+<!-- Homepage: Chapter & Verse Charters — cream, sage accent, serif + sans -->
+<div class="relative z-0 min-h-screen font-sans text-cv-charcoal antialiased">
+  <!-- Header -->
+  <header
+    class="sticky top-0 z-50 border-b border-cv-sage-accent/15 bg-cv-cream/75 backdrop-blur-md"
+  >
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4 md:gap-4 md:pl-0 md:pr-10 md:py-[1.125rem]">
+      <a routerLink="/" class="group block shrink-0 no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-cv-sage-accent focus-visible:ring-offset-2 md:-ml-8">
+        <img
+          src="assets/image_2026-03-29_163143943-removebg-preview.png"
+          width="280"
+          height="120"
+          alt="Chapter & Verse Charters, LLC"
+          class="h-9 w-auto max-w-[min(62vw,11rem)] object-contain object-left sm:h-10 sm:max-w-[12rem] md:h-[5rem] md:max-w-[18rem]"
+        />
+      </a>
+      <nav
+        class="relative hidden items-center justify-end gap-x-6 pb-2 text-[0.8125rem] font-medium md:flex md:text-sm"
+        aria-label="Primary"
+      >
+        <a
+          #navHero
+          routerLink="/"
+          class="pb-0.5 transition hover:text-cv-sage-accent"
+          [class.text-cv-charcoal]="activeSection === 'hero'"
+          [class.text-neutral-700]="activeSection !== 'hero'"
+          (click)="onHomeNavClick($event)"
+          >Home</a
+        >
+        <a
+          #navPhilosophy
+          href="#philosophy"
+          class="pb-0.5 transition hover:text-cv-sage-accent"
+          [class.text-cv-charcoal]="activeSection === 'philosophy'"
+          [class.text-neutral-700]="activeSection !== 'philosophy'"
+          (click)="scrollToSection($event, 'philosophy')"
+          >Our Story</a
+        >
+        <a
+          #navCharters
+          href="#charters"
+          class="pb-0.5 transition hover:text-cv-sage-accent"
+          [class.text-cv-charcoal]="activeSection === 'charters'"
+          [class.text-neutral-700]="activeSection !== 'charters'"
+          (click)="scrollToSection($event, 'charters')"
+          >Charters</a
+        >
+        <a
+          routerLink="/contact"
+          class="pb-0.5 text-neutral-700 transition hover:text-cv-sage-accent"
+          >Contact us</a
+        >
+        <span
+          class="pointer-events-none absolute bottom-0 h-[3px] rounded-full bg-gradient-to-r from-cv-sage-accent/70 via-white/70 to-cv-sage-accent/70 shadow-[0_0_0_1px_rgba(255,255,255,0.45),0_2px_8px_rgba(129,152,130,0.35)] backdrop-blur-md transition-[left,width,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+          [class.opacity-0]="!indicatorReady"
+          [class.opacity-100]="indicatorReady"
+          [style.left.px]="indicatorLeft"
+          [style.width.px]="indicatorWidth"
+        ></span>
+      </nav>
+      <button
+        type="button"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-cv-sage-accent/25 bg-white/40 text-cv-ink transition hover:bg-white/60 md:hidden"
+        aria-label="Toggle navigation"
+        [attr.aria-expanded]="mobileMenuOpen"
+        (click)="toggleMobileMenu()"
+      >
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path
+            [attr.d]="mobileMenuOpen ? 'M6 6l12 12M18 6 6 18' : 'M4 7h16M4 12h16M4 17h16'"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div
+    class="fixed inset-0 z-[70] transition-opacity duration-300 md:hidden"
+    [class.opacity-0]="!mobileMenuOpen"
+    [class.opacity-100]="mobileMenuOpen"
+    [class.pointer-events-none]="!mobileMenuOpen"
+    [class.pointer-events-auto]="mobileMenuOpen"
+    (click)="closeMobileMenu()"
+  >
+    <div
+      class="absolute inset-0 bg-black/20 backdrop-blur-[1px] transition-opacity duration-300"
+      [class.opacity-0]="!mobileMenuOpen"
+      [class.opacity-100]="mobileMenuOpen"
+    ></div>
+    <nav
+      class="absolute left-0 top-0 h-full w-[min(82vw,22rem)] border-r border-cv-sage-accent/20 bg-cv-cream/95 px-6 pb-8 pt-24 shadow-2xl backdrop-blur-md transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+      [class.-translate-x-full]="!mobileMenuOpen"
+      [class.translate-x-0]="mobileMenuOpen"
+      aria-label="Mobile primary"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="flex flex-col gap-4 text-sm font-semibold">
+        <a
+          routerLink="/"
+          class="w-fit border-b-2 pb-1 transition hover:text-cv-sage-accent"
+          [class.border-cv-sage-accent]="activeSection === 'hero'"
+          [class.border-transparent]="activeSection !== 'hero'"
+          [class.text-cv-charcoal]="activeSection === 'hero'"
+          [class.text-neutral-700]="activeSection !== 'hero'"
+          (click)="onHomeNavClick($event); closeMobileMenu()"
+          >Home</a
+        >
+        <a
+          href="#philosophy"
+          class="w-fit border-b-2 pb-1 transition hover:text-cv-sage-accent"
+          [class.border-cv-sage-accent]="activeSection === 'philosophy'"
+          [class.border-transparent]="activeSection !== 'philosophy'"
+          [class.text-cv-charcoal]="activeSection === 'philosophy'"
+          [class.text-neutral-700]="activeSection !== 'philosophy'"
+          (click)="scrollToSection($event, 'philosophy'); closeMobileMenu()"
+          >Our Story</a
+        >
+        <a
+          href="#charters"
+          class="w-fit border-b-2 pb-1 transition hover:text-cv-sage-accent"
+          [class.border-cv-sage-accent]="activeSection === 'charters'"
+          [class.border-transparent]="activeSection !== 'charters'"
+          [class.text-cv-charcoal]="activeSection === 'charters'"
+          [class.text-neutral-700]="activeSection !== 'charters'"
+          (click)="scrollToSection($event, 'charters'); closeMobileMenu()"
+          >Charters</a
+        >
+        <a
+          routerLink="/contact"
+          class="w-fit border-b-2 border-transparent pb-1 text-neutral-700 transition hover:text-cv-sage-accent"
+          (click)="closeMobileMenu()"
+          >Contact us</a
+        >
+      </div>
+    </nav>
+  </div>
+
+  <!-- Hero -->
+  <section id="hero" class="scroll-mt-[5rem] px-6 pb-20 pt-16 md:scroll-mt-24 md:pb-28 md:pt-44">
+    <div class="mx-auto -mt-6 max-w-4xl text-center md:-mt-10">
+      <p
+        class="mb-8 text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-neutral-500 md:text-xs"
+      >
+        Chapter &amp; Verse Charters, LLC
+      </p>
+      <h1 class="font-serif font-normal leading-[1.1] tracking-tight text-cv-charcoal">
+        <span class="block text-[2rem] sm:text-4xl md:text-5xl">Products For Every</span>
+        <span
+          class="mt-3 block bg-gradient-to-r from-neutral-950 to-cv-sage-accent bg-clip-text font-serif text-[2.35rem] italic text-transparent sm:text-5xl md:text-6xl lg:text-7xl"
+          >Chapter of Her Life.</span
+        >
+      </h1>
+      <p class="mx-auto mt-10 max-w-xl text-base leading-relaxed text-neutral-600 md:text-lg">
+        Thoughtfully curated essentials for every transition—so the details of your day support the
+        story you are living, never slow it down.
+      </p>
+      <div class="mt-12 flex flex-col items-center justify-center gap-6 sm:flex-row sm:gap-10">
+        <a
+          href="#charters"
+          class="inline-flex min-w-[14rem] items-center justify-center rounded-full bg-cv-sage-accent px-10 py-4 text-center text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:opacity-95"
+          (click)="scrollToSection($event, 'charters')"
+        >
+          Shop the collection
+        </a>
+        <a
+          href="#philosophy"
+          class="group inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-cv-charcoal no-underline transition hover:text-cv-sage-accent"
+          (click)="scrollToSection($event, 'philosophy')"
+        >
+          Learn our philosophy
+          <svg class="h-4 w-4 transition group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14m-4-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Philosophy & detail -->
+  <section id="philosophy" class="scroll-mt-[5rem] border-t border-cv-sage-accent/15 bg-white/25 px-6 py-20 backdrop-blur-[2px] md:scroll-mt-24 md:py-28">
+    <div class="mx-auto max-w-3xl text-center">
+      <h2 class="font-serif text-3xl font-normal leading-tight text-cv-charcoal md:text-4xl">
+        <span class="block">Practicality as a</span>
+        <span class="mt-2 block font-serif italic text-cv-sage-accent md:text-5xl">Promise.</span>
+      </h2>
+
+      <figure class="mx-auto my-12 max-w-[5rem] sm:max-w-[8rem] md:max-w-[18rem]">
+        <img
+          src="assets/ChatGPT_Image_Mar_30__2026__08_57_17_AM-removebg-preview.png"
+          width="200"
+          height="320"
+          alt="Vintage-style botanical bouquet with sage foliage and pastel blooms"
+          class="mx-auto h-auto w-full max-h-[min(38vh,16rem)] object-contain object-center md:max-h-[19rem]"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+
+      <p class="mx-auto max-w-2xl text-base leading-relaxed text-neutral-600 md:text-lg">
+        Chapter &amp; Verse began as a quiet answer to a noisy market: fewer, better pieces that
+        respect your time, your space, and the season you are in. What we make is meant to fade into
+        the background of a well-lived life—reliable, beautiful, and always in step with you.
+      </p>
+
+      <div class="mx-auto my-16 max-w-2xl border-y border-cv-sage-accent/25 py-12">
+        <p class="font-serif text-2xl italic leading-snug text-cv-charcoal md:text-3xl">
+          &ldquo;Practicality is the highest form of self-care.&rdquo;
+        </p>
+        <p class="mt-8 text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-neutral-500">
+          Founding philosophy
+        </p>
+      </div>
+
+      <div class="mx-auto max-w-2xl space-y-6 text-base leading-relaxed text-neutral-600">
+        <p>
+          We design for rhythm—not trends. Each piece is chosen to carry you through early mornings,
+          full calendars, and the rare quiet hour without asking you to reinvent your routine.
+        </p>
+        <p>
+          Our hope is simple: that what you reach for each day feels inevitable, grounded, and
+          unmistakably yours.
+        </p>
+      </div>
+
+      <div
+        class="mx-auto mt-14 max-w-2xl border border-cv-sage-accent/35 bg-cv-sage-soft px-8 py-10 md:px-12 md:py-12"
+      >
+        <p class="font-serif text-lg italic leading-relaxed text-cv-charcoal md:text-xl">
+          We are here to ensure that no matter which chapter you are writing, your everyday tools are
+          never the reason you pause.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonial -->
+  <section class="bg-transparent px-6 py-20 md:py-24">
+    <div class="mx-auto max-w-3xl text-center">
+      <span class="mb-8 block font-serif text-6xl leading-none text-cv-sage-accent opacity-90 md:text-7xl" aria-hidden="true"
+        >&ldquo;</span
+      >
+      <blockquote class="font-serif text-xl italic leading-relaxed text-cv-charcoal md:text-2xl">
+        I finally found a collection that understands the duality of my life. The quality is
+        exceptional, but the thoughtfulness behind every item is what keeps me coming back to Chapter
+        &amp; Verse.
+      </blockquote>
+      <div class="mt-12 space-y-1">
+        <p class="text-xs font-semibold uppercase tracking-[0.25em] text-cv-charcoal">Donnette .</p>
+        <p class="text-sm font-normal text-neutral-500">Chapter 12: Modern Motherhood</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section id="charters" class="scroll-mt-[5rem] border-y border-white/30 bg-white/35 px-6 py-20 backdrop-blur-sm md:scroll-mt-24 md:py-28">
+    <div class="mx-auto max-w-2xl text-center">
+      <h2 class="font-serif text-3xl font-normal text-cv-charcoal md:text-4xl">Write Your Next Chapter.</h2>
+      <p class="mx-auto mt-6 max-w-lg text-base leading-relaxed text-neutral-600">
+        Discover the collection built for real life—and the grace notes that make the everyday feel
+        considered.
+      </p>
+      <a
+        href="#hero"
+        class="mt-10 inline-flex min-w-[12rem] items-center justify-center bg-cv-sage-accent px-10 py-4 text-xs font-semibold uppercase tracking-[0.2em] text-white no-underline transition hover:opacity-95"
+        (click)="scrollToSection($event, 'hero')"
+      >
+        Begin shopping
+      </a>
+    </div>
+  </section>
+
+  <app-site-footer></app-site-footer>
+</div>
