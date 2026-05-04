@@ -1,4 +1,10 @@
 /** Homepage copy stored in Firebase Storage as JSON (see `HomeContentStorageService`). */
+export interface AdminUser {
+  name: string;
+  email: string;
+  role: 'Owner' | 'Editor' | 'Admin';
+}
+
 export interface HomePageContent {
   heroEyebrow: string;
   heroTitleTop: string;
@@ -28,6 +34,7 @@ export interface HomePageContent {
   valuesCard3Body: string;
   valuesCard4Title: string;
   valuesCard4Body: string;
+  adminUsers: AdminUser[];
 }
 
 export const DEFAULT_HOME_PAGE_CONTENT: HomePageContent = {
@@ -66,20 +73,50 @@ export const DEFAULT_HOME_PAGE_CONTENT: HomePageContent = {
   valuesCard3Body: 'Curated essentials that eliminate clutter and foster ease.',
   valuesCard4Title: 'Designed for Real Life',
   valuesCard4Body:
-    'Anticipating modern femininity from quiet mornings to full schedules.'
+    'Anticipating modern femininity from quiet mornings to full schedules.',
+  adminUsers: []
 };
 
+function isAdminRole(value: unknown): value is AdminUser['role'] {
+  return value === 'Owner' || value === 'Editor' || value === 'Admin';
+}
+
 export function mergeHomePageContent(raw: unknown): HomePageContent {
-  const base: HomePageContent = { ...DEFAULT_HOME_PAGE_CONTENT };
+  const base: HomePageContent = {
+    ...DEFAULT_HOME_PAGE_CONTENT,
+    adminUsers: DEFAULT_HOME_PAGE_CONTENT.adminUsers.map((user) => ({ ...user }))
+  };
   if (!raw || typeof raw !== 'object') {
     return base;
   }
   const o = raw as Record<string, unknown>;
-  (Object.keys(base) as (keyof HomePageContent)[]).forEach((key) => {
+  (Object.keys(DEFAULT_HOME_PAGE_CONTENT) as (keyof HomePageContent)[]).forEach((key) => {
+    if (key === 'adminUsers') {
+      return;
+    }
     const v = o[key];
     if (typeof v === 'string') {
       base[key] = v;
     }
   });
+
+  const adminUsers = o['adminUsers'];
+  if (Array.isArray(adminUsers)) {
+    const safeUsers: AdminUser[] = adminUsers
+      .filter((entry): entry is Record<string, unknown> => !!entry && typeof entry === 'object')
+      .map((entry) => {
+        const role = isAdminRole(entry['role']) ? entry['role'] : 'Editor';
+        return {
+          name: typeof entry['name'] === 'string' ? entry['name'] : '',
+          email: typeof entry['email'] === 'string' ? entry['email'] : '',
+          role
+        };
+      })
+      .filter((user) => user.name.trim().length > 0 && user.email.trim().length > 0);
+
+    if (safeUsers.length > 0) {
+      base.adminUsers = safeUsers;
+    }
+  }
   return base;
 }

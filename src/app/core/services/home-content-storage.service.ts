@@ -25,29 +25,26 @@ export class HomeContentStorageService {
   constructor(private readonly storage: Storage) {}
 
   load(): Observable<HomePageContent> {
-    if (this.shouldUseLocalFallback()) {
-      return of(this.loadLocalDraft());
-    }
-
     const storageRef = ref(this.storage, this.objectPath);
     return from(getBytes(storageRef)).pipe(
       map((bytes) => this.parseJsonBytes(bytes)),
       map((json) => mergeHomePageContent(json)),
-      catchError(() => of({ ...DEFAULT_HOME_PAGE_CONTENT }))
+      catchError(() => of(this.loadLocalDraft()))
     );
   }
 
   async save(content: HomePageContent): Promise<void> {
-    if (this.shouldUseLocalFallback()) {
-      this.saveLocalDraft(content);
-      return;
-    }
-
     const storageRef = ref(this.storage, this.objectPath);
     const body = JSON.stringify(content, null, 2);
-    await uploadString(storageRef, body, 'raw', {
-      contentType: 'application/json; charset=utf-8'
-    });
+    try {
+      await uploadString(storageRef, body, 'raw', {
+        contentType: 'application/json; charset=utf-8'
+      });
+      this.saveLocalDraft(content);
+    } catch (error) {
+      this.saveLocalDraft(content);
+      throw error;
+    }
   }
 
   private parseJsonBytes(bytes: ArrayBuffer): unknown {
@@ -57,17 +54,6 @@ export class HomeContentStorageService {
     } catch {
       throw new Error('Invalid JSON in home page content file.');
     }
-  }
-
-  private shouldUseLocalFallback(): boolean {
-    if (typeof window === 'undefined') {
-      return false;
-    }
-
-    return (
-      window.location.hostname === 'localhost' ||
-      window.location.hostname === '127.0.0.1'
-    );
   }
 
   private loadLocalDraft(): HomePageContent {

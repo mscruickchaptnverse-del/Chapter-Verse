@@ -68,9 +68,16 @@ export class SignInComponent {
         signInWithEmailAndPassword(this.auth, address, secret)
       );
       console.log('[SignIn] Firebase sign-in succeeded');
+      const signedInUser = this.auth.currentUser;
+      const tokenResult = signedInUser ? await signedInUser.getIdTokenResult(true) : null;
+      const mustChangePassword = tokenResult?.claims['mustChangePassword'] === true;
       const returnUrl = this.safeReturnUrl(
         this.route.snapshot.queryParamMap.get('returnUrl')
       );
+      if (mustChangePassword) {
+        await this.router.navigateByUrl('/change-password');
+        return;
+      }
       console.log('[SignIn] navigating', { returnUrl, rawReturnUrl: this.route.snapshot.queryParamMap.get('returnUrl') });
       await this.router.navigateByUrl(returnUrl);
       console.log('[SignIn] navigateByUrl resolved');
