@@ -1,15 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Auth, signOut } from '@angular/fire/auth';
 
-type EditableSection = 'hero' | 'philosophy' | 'cta';
+import { DEFAULT_HOME_PAGE_CONTENT, HomePageContent } from '../../core/models/home-page-content';
+import { HomeContentStorageService } from '../../core/services/home-content-storage.service';
 
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html'
 })
-export class EditorComponent {
-  section: EditableSection = 'hero';
+export class EditorComponent implements OnInit {
   hasChanges = false;
   saveMessage = '';
   isBold = false;
@@ -19,36 +19,27 @@ export class EditorComponent {
   selectedFont = 'Inter';
   selectedSize = '16px';
 
-  readonly snapshot = {
-    heroEyebrow: 'CHAPTER & VERSE CHARTERS, LLC',
-    heroTitleTop: 'Products For Every',
-    heroTitleBottom: 'Chapter of Her Life.',
-    heroBody:
-      'Thoughtfully curated essentials for every transition, so the details of your day support the story you are living.',
-    primaryCta: 'Shop the collection',
-    secondaryCta: 'Learn our philosophy',
-    philosophyTitle: 'Practicality as a Promise.',
-    philosophyBody:
-      'We design for rhythm, not trends. Every section can be curated here before publishing.',
-    ctaTitle: 'Write Your Next Chapter.',
-    ctaBody:
-      'Use this console to update homepage copy and review content before pushing live.'
-  };
-
-  form = { ...this.snapshot };
+  form: HomePageContent = { ...DEFAULT_HOME_PAGE_CONTENT };
+  baseline: HomePageContent = { ...DEFAULT_HOME_PAGE_CONTENT };
 
   constructor(
     private readonly auth: Auth,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly homeContentStorage: HomeContentStorageService
   ) {}
+
+  ngOnInit(): void {
+    this.homeContentStorage.load().subscribe((data) => {
+      this.form = { ...data };
+      this.baseline = { ...data };
+      this.hasChanges = false;
+      this.saveMessage = '';
+    });
+  }
 
   async logout(): Promise<void> {
     await signOut(this.auth);
     await this.router.navigate(['/sign-in']);
-  }
-
-  setSection(section: EditableSection): void {
-    this.section = section;
   }
 
   toggleBold(): void {
@@ -75,22 +66,33 @@ export class EditorComponent {
     this.selectedSize = (event.target as HTMLSelectElement).value;
   }
 
-  onInput<K extends keyof typeof this.form>(key: K, event: Event): void {
-    this.form[key] = (event.target as HTMLInputElement | HTMLTextAreaElement).value as (typeof this.form)[K];
+  onInput(key: keyof HomePageContent, event: Event): void {
+    const target = event.target as HTMLInputElement | HTMLTextAreaElement;
+    this.form = { ...this.form, [key]: target.value };
     this.hasChanges = true;
     this.saveMessage = '';
   }
 
   discardChanges(): void {
-    this.form = { ...this.snapshot };
+    this.form = { ...this.baseline };
     this.hasChanges = false;
     this.saveMessage = 'Changes discarded.';
   }
 
-  publishChanges(): void {
-    // Placeholder until backend persistence is added.
-    this.hasChanges = false;
-    this.saveMessage = 'Draft saved locally. Connect backend to publish live.';
+  async publishChanges(): Promise<void> {
+    if (!this.hasChanges) {
+      return;
+    }
+    this.saveMessage = 'Publishing…';
+    try {
+      await this.homeContentStorage.save(this.form);
+      this.baseline = { ...this.form };
+      this.hasChanges = false;
+      this.saveMessage = 'Published to Firebase Storage.';
+    } catch {
+      this.saveMessage =
+        'Could not save. Sign in to the editor and allow Storage writes for authenticated users.';
+    }
   }
 
   get previewClassMap(): Record<string, boolean> {

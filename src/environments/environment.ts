@@ -9,6 +9,8 @@ export const environment = {
     messagingSenderId: '279570530036',
     appId: '1:279570530036:web:3fdd7484bd91c30059a8a1',
   },
+  /** JSON file path in the default Storage bucket (homepage copy). */
+  homePageStoragePath: 'cms/home-page.json',
   /** EmailJS — copy IDs from https://dashboard.emailjs.com/admin */
   emailjs: {
     publicKey: 'I7tGM6liDMopVG-zR',

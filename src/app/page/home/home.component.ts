@@ -4,15 +4,20 @@ import {
   Component,
   ElementRef,
   HostListener,
+  OnInit,
   ViewChild
 } from '@angular/core';
 import { Router } from '@angular/router';
+
+import { DEFAULT_HOME_PAGE_CONTENT, HomePageContent } from '../../core/models/home-page-content';
+import { HomeContentStorageService } from '../../core/services/home-content-storage.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html'
 })
-export class HomeComponent implements AfterViewInit {
+export class HomeComponent implements OnInit, AfterViewInit {
+  content: HomePageContent = { ...DEFAULT_HOME_PAGE_CONTENT };
   activeSection: 'hero' | 'philosophy' | 'charters' = 'hero';
   mobileMenuOpen = false;
   indicatorLeft = 0;
@@ -27,8 +32,16 @@ export class HomeComponent implements AfterViewInit {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly homeContentStorage: HomeContentStorageService
   ) {}
+
+  ngOnInit(): void {
+    this.homeContentStorage.load().subscribe((c) => {
+      this.content = c;
+      this.cdr.markForCheck();
+    });
+  }
 
   ngAfterViewInit(): void {
     queueMicrotask(() => {

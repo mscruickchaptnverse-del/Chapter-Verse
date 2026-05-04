@@ -156,13 +156,27 @@
       <div class="mt-5 grid gap-4 md:grid-cols-2">
         <article class="rounded-lg border border-cv-sage-accent/20 bg-cv-shell/70 p-4">
           <h2 class="mb-4 font-serif text-xl text-cv-green">Main Headline</h2>
-          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Headline</label>
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Eyebrow</label>
+          <input
+            class="mb-3 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [value]="form.heroEyebrow"
+            (input)="onInput('heroEyebrow', $event)"
+          />
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Title line 1</label>
           <input
             class="mb-3 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
             [ngClass]="previewClassMap"
             [style.fontSize]="selectedSize"
-            [value]="form.heroTitleTop + ' ' + form.heroTitleBottom"
+            [value]="form.heroTitleTop"
             (input)="onInput('heroTitleTop', $event)"
+          />
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Title line 2</label>
+          <input
+            class="mb-3 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [ngClass]="previewClassMap"
+            [style.fontSize]="selectedSize"
+            [value]="form.heroTitleBottom"
+            (input)="onInput('heroTitleBottom', $event)"
           />
           <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Subtext</label>
           <textarea
@@ -173,29 +187,97 @@
             [value]="form.heroBody"
             (input)="onInput('heroBody', $event)"
           ></textarea>
-          <label class="mb-1 mt-3 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">CTA Label</label>
+          <label class="mb-1 mt-3 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Primary CTA</label>
+          <input
+            class="mb-2 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [value]="form.heroPrimaryCta"
+            (input)="onInput('heroPrimaryCta', $event)"
+          />
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Secondary CTA</label>
           <input
             class="w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
-            [value]="form.primaryCta"
-            (input)="onInput('primaryCta', $event)"
+            [value]="form.heroSecondaryCta"
+            (input)="onInput('heroSecondaryCta', $event)"
           />
         </article>
 
         <article class="rounded-lg border border-cv-sage-accent/20 bg-cv-shell/70 p-4">
           <h2 class="mb-4 font-serif text-xl text-cv-green">Our Story</h2>
-          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Narrative headline</label>
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Heading line 1</label>
           <input
             class="mb-3 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
-            [value]="form.philosophyTitle"
-            (input)="onInput('philosophyTitle', $event)"
+            [value]="form.philosophyHeadingLine1"
+            (input)="onInput('philosophyHeadingLine1', $event)"
           />
-          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Narrative text</label>
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Accent word</label>
+          <input
+            class="mb-3 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [value]="form.philosophyHeadingAccent"
+            (input)="onInput('philosophyHeadingAccent', $event)"
+          />
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Intro</label>
           <textarea
             rows="5"
             class="w-full resize-y border border-cv-grey/25 bg-white/70 p-2 text-sm text-cv-grey outline-none focus:border-cv-green"
-            [value]="form.philosophyBody"
-            (input)="onInput('philosophyBody', $event)"
+            [value]="form.philosophyIntro"
+            (input)="onInput('philosophyIntro', $event)"
           ></textarea>
+        </article>
+      </div>
+
+      <div class="mt-6 grid gap-4 md:grid-cols-2">
+        <article class="rounded-lg border border-cv-sage-accent/20 bg-cv-shell/70 p-4">
+          <h2 class="mb-4 font-serif text-xl text-cv-green">Philosophy details</h2>
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Quote</label>
+          <textarea
+            rows="2"
+            class="mb-3 w-full resize-y border border-cv-grey/25 bg-white/70 p-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [value]="form.philosophyQuote"
+            (input)="onInput('philosophyQuote', $event)"
+          ></textarea>
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Quote label</label>
+          <input
+            class="mb-3 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [value]="form.philosophyQuoteLabel"
+            (input)="onInput('philosophyQuoteLabel', $event)"
+          />
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Paragraph 1</label>
+          <textarea
+            rows="3"
+            class="mb-3 w-full resize-y border border-cv-grey/25 bg-white/70 p-2 text-sm text-cv-grey outline-none focus:border-cv-green"
+            [value]="form.philosophyParagraph1"
+            (input)="onInput('philosophyParagraph1', $event)"
+          ></textarea>
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Paragraph 2</label>
+          <textarea
+            rows="3"
+            class="w-full resize-y border border-cv-grey/25 bg-white/70 p-2 text-sm text-cv-grey outline-none focus:border-cv-green"
+            [value]="form.philosophyParagraph2"
+            (input)="onInput('philosophyParagraph2', $event)"
+          ></textarea>
+        </article>
+
+        <article class="rounded-lg border border-cv-sage-accent/20 bg-cv-shell/70 p-4">
+          <h2 class="mb-4 font-serif text-xl text-cv-green">Testimonial</h2>
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Quote</label>
+          <textarea
+            rows="5"
+            class="mb-3 w-full resize-y border border-cv-grey/25 bg-white/70 p-2 text-sm text-cv-grey outline-none focus:border-cv-green"
+            [value]="form.testimonialQuote"
+            (input)="onInput('testimonialQuote', $event)"
+          ></textarea>
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Name</label>
+          <input
+            class="mb-3 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [value]="form.testimonialName"
+            (input)="onInput('testimonialName', $event)"
+          />
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Subtitle</label>
+          <input
+            class="w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [value]="form.testimonialSubtitle"
+            (input)="onInput('testimonialSubtitle', $event)"
+          />
         </article>
       </div>
 
@@ -204,23 +286,59 @@
         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <article class="rounded-md border border-cv-sage-accent/20 bg-white p-3">
             <p class="text-[0.52rem] uppercase tracking-[0.16em] text-cv-muted">Card Title</p>
-            <p class="mt-1 text-sm font-semibold text-cv-charcoal">Practicality Over Trends</p>
-            <p class="mt-2 text-xs text-cv-grey">Functional design that honors your time and space.</p>
+            <input
+              class="mt-1 w-full border-0 border-b border-cv-grey/30 bg-transparent text-sm font-semibold text-cv-charcoal outline-none focus:border-cv-green"
+              [value]="form.valuesCard1Title"
+              (input)="onInput('valuesCard1Title', $event)"
+            />
+            <textarea
+              rows="2"
+              class="mt-2 w-full resize-y border-0 bg-transparent text-xs text-cv-grey outline-none"
+              [value]="form.valuesCard1Body"
+              (input)="onInput('valuesCard1Body', $event)"
+            ></textarea>
           </article>
           <article class="rounded-md border border-cv-sage-accent/20 bg-white p-3">
             <p class="text-[0.52rem] uppercase tracking-[0.16em] text-cv-muted">Card Title</p>
-            <p class="mt-1 text-sm font-semibold text-cv-charcoal">Reliability You Can Trust</p>
-            <p class="mt-2 text-xs text-cv-grey">Built with artisanal integrity to accompany your legacy.</p>
+            <input
+              class="mt-1 w-full border-0 border-b border-cv-grey/30 bg-transparent text-sm font-semibold text-cv-charcoal outline-none focus:border-cv-green"
+              [value]="form.valuesCard2Title"
+              (input)="onInput('valuesCard2Title', $event)"
+            />
+            <textarea
+              rows="2"
+              class="mt-2 w-full resize-y border-0 bg-transparent text-xs text-cv-grey outline-none"
+              [value]="form.valuesCard2Body"
+              (input)="onInput('valuesCard2Body', $event)"
+            ></textarea>
           </article>
           <article class="rounded-md border border-cv-sage-accent/20 bg-white p-3">
             <p class="text-[0.52rem] uppercase tracking-[0.16em] text-cv-muted">Card Title</p>
-            <p class="mt-1 text-sm font-semibold text-cv-charcoal">Simple, Thoughtful Living</p>
-            <p class="mt-2 text-xs text-cv-grey">Curated essentials that eliminate clutter and foster ease.</p>
+            <input
+              class="mt-1 w-full border-0 border-b border-cv-grey/30 bg-transparent text-sm font-semibold text-cv-charcoal outline-none focus:border-cv-green"
+              [value]="form.valuesCard3Title"
+              (input)="onInput('valuesCard3Title', $event)"
+            />
+            <textarea
+              rows="2"
+              class="mt-2 w-full resize-y border-0 bg-transparent text-xs text-cv-grey outline-none"
+              [value]="form.valuesCard3Body"
+              (input)="onInput('valuesCard3Body', $event)"
+            ></textarea>
           </article>
           <article class="rounded-md border border-cv-sage-accent/20 bg-white p-3">
             <p class="text-[0.52rem] uppercase tracking-[0.16em] text-cv-muted">Card Title</p>
-            <p class="mt-1 text-sm font-semibold text-cv-charcoal">Designed for Real Life</p>
-            <p class="mt-2 text-xs text-cv-grey">Anticipating modern femininity from quiet mornings to full schedules.</p>
+            <input
+              class="mt-1 w-full border-0 border-b border-cv-grey/30 bg-transparent text-sm font-semibold text-cv-charcoal outline-none focus:border-cv-green"
+              [value]="form.valuesCard4Title"
+              (input)="onInput('valuesCard4Title', $event)"
+            />
+            <textarea
+              rows="2"
+              class="mt-2 w-full resize-y border-0 bg-transparent text-xs text-cv-grey outline-none"
+              [value]="form.valuesCard4Body"
+              (input)="onInput('valuesCard4Body', $event)"
+            ></textarea>
           </article>
         </div>
       </section>
@@ -228,12 +346,12 @@
       <div class="mt-6 grid gap-4 md:grid-cols-2">
         <article class="rounded-lg border border-cv-sage-accent/20 bg-cv-shell/70 p-4">
           <h2 class="mb-3 font-serif text-xl text-cv-green">Our Promise</h2>
-          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Quote text</label>
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Callout</label>
           <textarea
             rows="4"
             class="w-full resize-y border border-cv-grey/25 bg-white/70 p-2 text-sm italic text-cv-charcoal outline-none focus:border-cv-green"
-            [value]="form.philosophyBody"
-            (input)="onInput('philosophyBody', $event)"
+            [value]="form.philosophyPullQuote"
+            (input)="onInput('philosophyPullQuote', $event)"
           ></textarea>
           <label class="mb-1 mt-3 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Attribution</label>
           <input
@@ -244,18 +362,25 @@
         </article>
 
         <article class="rounded-lg border border-cv-sage-accent/20 bg-cv-shell/70 p-4">
-          <h2 class="mb-3 font-serif text-xl text-cv-green">Contact CTA Section</h2>
+          <h2 class="mb-3 font-serif text-xl text-cv-green">Charters CTA</h2>
           <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Headline</label>
           <input
             class="mb-3 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
-            [value]="form.ctaTitle"
-            (input)="onInput('ctaTitle', $event)"
+            [value]="form.chartersTitle"
+            (input)="onInput('chartersTitle', $event)"
           />
-          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Button Label</label>
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Body</label>
+          <textarea
+            rows="3"
+            class="mb-3 w-full resize-y border border-cv-grey/25 bg-white/70 p-2 text-sm text-cv-grey outline-none focus:border-cv-green"
+            [value]="form.chartersBody"
+            (input)="onInput('chartersBody', $event)"
+          ></textarea>
+          <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Button label</label>
           <input
             class="w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
-            [value]="form.primaryCta"
-            (input)="onInput('primaryCta', $event)"
+            [value]="form.chartersButton"
+            (input)="onInput('chartersButton', $event)"
           />
         </article>
       </div>

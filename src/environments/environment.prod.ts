@@ -8,6 +8,7 @@ export const environment = {
     messagingSenderId: '279570530036',
     appId: '1:279570530036:web:3fdd7484bd91c30059a8a1',
   },
+  homePageStoragePath: 'cms/home-page.json',
   emailjs: {
     publicKey: 'I7tGM6liDMopVG-zR',
     serviceId: 'service_fnv7kso',
