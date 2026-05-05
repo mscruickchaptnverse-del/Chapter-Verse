@@ -26,6 +26,7 @@ export interface HomePageContent {
   chartersTitle: string;
   chartersBody: string;
   chartersButton: string;
+  chartersButtonLink: string;
   valuesCard1Title: string;
   valuesCard1Body: string;
   valuesCard2Title: string;
@@ -65,6 +66,7 @@ export const DEFAULT_HOME_PAGE_CONTENT: HomePageContent = {
   chartersBody:
     'Discover the collection built for real life—and the grace notes that make the everyday feel considered.',
   chartersButton: 'Begin shopping',
+  chartersButtonLink: '/shop',
   valuesCard1Title: 'Practicality Over Trends',
   valuesCard1Body: 'Functional design that honors your time and space.',
   valuesCard2Title: 'Reliability You Can Trust',

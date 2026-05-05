@@ -5,6 +5,15 @@ import { Auth, signOut } from '@angular/fire/auth';
 import { DEFAULT_HOME_PAGE_CONTENT, HomePageContent } from '../../core/models/home-page-content';
 import { HomeContentStorageService } from '../../core/services/home-content-storage.service';
 
+type FieldStyle = {
+  isBold: boolean;
+  isItalic: boolean;
+  isUnderline: boolean;
+  textAlign: 'left' | 'center' | 'right';
+  font: string;
+  size: string;
+};
+
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html'
@@ -18,6 +27,8 @@ export class EditorComponent implements OnInit {
   textAlign: 'left' | 'center' | 'right' = 'left';
   selectedFont = 'Inter';
   selectedSize = '16px';
+  activeField: keyof HomePageContent | null = null;
+  private readonly fieldStyles: Partial<Record<keyof HomePageContent, FieldStyle>> = {};
 
   form: HomePageContent = { ...DEFAULT_HOME_PAGE_CONTENT };
   baseline: HomePageContent = { ...DEFAULT_HOME_PAGE_CONTENT };
@@ -44,26 +55,69 @@ export class EditorComponent implements OnInit {
 
   toggleBold(): void {
     this.isBold = !this.isBold;
+    this.syncActiveFieldStyle();
   }
 
   toggleItalic(): void {
     this.isItalic = !this.isItalic;
+    this.syncActiveFieldStyle();
   }
 
   toggleUnderline(): void {
     this.isUnderline = !this.isUnderline;
+    this.syncActiveFieldStyle();
   }
 
   setTextAlign(align: 'left' | 'center' | 'right'): void {
     this.textAlign = align;
+    this.syncActiveFieldStyle();
   }
 
   updateFont(event: Event): void {
     this.selectedFont = (event.target as HTMLSelectElement).value;
+    this.syncActiveFieldStyle();
   }
 
   updateSize(event: Event): void {
     this.selectedSize = (event.target as HTMLSelectElement).value;
+    this.syncActiveFieldStyle();
+  }
+
+  setActiveField(field: keyof HomePageContent): void {
+    this.activeField = field;
+    const style = this.getFieldStyle(field);
+    this.isBold = style.isBold;
+    this.isItalic = style.isItalic;
+    this.isUnderline = style.isUnderline;
+    this.textAlign = style.textAlign;
+    this.selectedFont = style.font;
+    this.selectedSize = style.size;
+  }
+
+  isActiveField(field: keyof HomePageContent): boolean {
+    return this.activeField === field;
+  }
+
+  keepFieldFocus(event: MouseEvent): void {
+    event.preventDefault();
+  }
+
+  fieldClassMap(field: keyof HomePageContent): Record<string, boolean> | null {
+    const style = this.getFieldStyle(field);
+    return {
+      'font-bold': style.isBold,
+      italic: style.isItalic,
+      underline: style.isUnderline,
+      'text-left': style.textAlign === 'left',
+      'text-center': style.textAlign === 'center',
+      'text-right': style.textAlign === 'right',
+      'font-sans': style.font === 'Inter',
+      'font-serif': style.font !== 'Inter'
+    };
+  }
+
+  fieldFontSize(field: keyof HomePageContent): string | null {
+    return this.getFieldStyle(field).size;
   }
 
   onInput(key: keyof HomePageContent, event: Event): void {
@@ -112,6 +166,34 @@ export class EditorComponent implements OnInit {
     return {
       ...content,
       adminUsers: content.adminUsers.map((user) => ({ ...user }))
+    };
+  }
+
+  private getFieldStyle(field: keyof HomePageContent): FieldStyle {
+    if (!this.fieldStyles[field]) {
+      this.fieldStyles[field] = {
+        isBold: false,
+        isItalic: true,
+        isUnderline: false,
+        textAlign: 'left',
+        font: 'Inter',
+        size: '16px'
+      };
+    }
+    return this.fieldStyles[field] as FieldStyle;
+  }
+
+  private syncActiveFieldStyle(): void {
+    if (!this.activeField) {
+      return;
+    }
+    this.fieldStyles[this.activeField] = {
+      isBold: this.isBold,
+      isItalic: this.isItalic,
+      isUnderline: this.isUnderline,
+      textAlign: this.textAlign,
+      font: this.selectedFont,
+      size: this.selectedSize
     };
   }
 }

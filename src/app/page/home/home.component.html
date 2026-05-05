@@ -254,9 +254,10 @@
         {{ content.chartersBody }}
       </p>
       <a
-        href="#hero"
+        [attr.href]="chartersButtonHref"
+        [attr.target]="chartersButtonIsExternal ? '_blank' : null"
+        [attr.rel]="chartersButtonIsExternal ? 'noopener noreferrer' : null"
         class="mt-10 inline-flex min-w-[12rem] items-center justify-center rounded-lg bg-cv-sage-accent px-10 py-4 text-xs font-semibold uppercase tracking-[0.2em] text-white no-underline transition hover:opacity-95"
-        (click)="scrollToSection($event, 'hero')"
       >
         {{ content.chartersButton }}
       </a>

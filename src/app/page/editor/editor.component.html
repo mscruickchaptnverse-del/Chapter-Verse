@@ -34,7 +34,9 @@
         </div>
       </header>
 
-      <div class="mt-4 border border-cv-sage-accent/15 bg-white/90 px-3 py-2 backdrop-blur-sm">
+      <div
+        class="sticky top-3 z-40 mt-4 border border-cv-sage-accent/15 bg-white/95 px-3 py-2 shadow-sm backdrop-blur-sm"
+      >
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div class="flex flex-wrap items-center gap-2">
             <div class="flex items-center gap-1 pr-2">
@@ -44,6 +46,7 @@
               [ngClass]="{ 'bg-cv-green/10': isBold }"
               [class.text-cv-green]="isBold"
               [class.text-cv-grey]="!isBold"
+              (mousedown)="keepFieldFocus($event)"
               (click)="toggleBold()"
             >
               B
@@ -54,6 +57,7 @@
               [ngClass]="{ 'bg-cv-green/10': isItalic }"
               [class.text-cv-green]="isItalic"
               [class.text-cv-grey]="!isItalic"
+              (mousedown)="keepFieldFocus($event)"
               (click)="toggleItalic()"
             >
               I
@@ -64,6 +68,7 @@
               [ngClass]="{ 'bg-cv-green/10': isUnderline }"
               [class.text-cv-green]="isUnderline"
               [class.text-cv-grey]="!isUnderline"
+              (mousedown)="keepFieldFocus($event)"
               (click)="toggleUnderline()"
             >
               U
@@ -97,6 +102,7 @@
                 [ngClass]="{ 'bg-cv-green/10': isUnderline }"
                 [class.text-cv-green]="isUnderline"
                 [class.text-cv-grey]="!isUnderline"
+                (mousedown)="keepFieldFocus($event)"
                 (click)="toggleUnderline()"
                 aria-label="Text color accent"
               >
@@ -111,6 +117,7 @@
               [ngClass]="{ 'bg-cv-green/10': textAlign==='left' }"
               [class.text-cv-green]="textAlign==='left'"
               [class.text-cv-grey]="textAlign!=='left'"
+              (mousedown)="keepFieldFocus($event)"
               (click)="setTextAlign('left')"
               aria-label="Align left"
             >
@@ -122,6 +129,7 @@
               [ngClass]="{ 'bg-cv-green/10': textAlign==='center' }"
               [class.text-cv-green]="textAlign==='center'"
               [class.text-cv-grey]="textAlign!=='center'"
+              (mousedown)="keepFieldFocus($event)"
               (click)="setTextAlign('center')"
               aria-label="Align center"
             >
@@ -133,6 +141,7 @@
               [ngClass]="{ 'bg-cv-green/10': textAlign==='right' }"
               [class.text-cv-green]="textAlign==='right'"
               [class.text-cv-grey]="textAlign!=='right'"
+              (mousedown)="keepFieldFocus($event)"
               (click)="setTextAlign('right')"
               aria-label="Align right"
             >
@@ -141,14 +150,14 @@
             </div>
 
             <div class="flex items-center gap-1 border-l border-cv-sage-accent/20 pl-3">
-              <button type="button" class="rounded px-2 py-1 text-sm text-cv-grey transition hover:bg-cv-green/10 hover:text-cv-green" aria-label="Bullet list">•</button>
-              <button type="button" class="rounded px-2 py-1 text-sm text-cv-grey transition hover:bg-cv-green/10 hover:text-cv-green" aria-label="Numbered list">1.</button>
+              <button type="button" class="rounded px-2 py-1 text-sm text-cv-grey transition hover:bg-cv-green/10 hover:text-cv-green" aria-label="Bullet list" (mousedown)="keepFieldFocus($event)">•</button>
+              <button type="button" class="rounded px-2 py-1 text-sm text-cv-grey transition hover:bg-cv-green/10 hover:text-cv-green" aria-label="Numbered list" (mousedown)="keepFieldFocus($event)">1.</button>
             </div>
           </div>
 
           <div class="flex items-center gap-1 border-l border-cv-sage-accent/20 pl-3">
-            <button type="button" class="rounded px-2 py-1 text-sm text-cv-grey transition hover:bg-cv-green/10 hover:text-cv-green" aria-label="Undo">↺</button>
-            <button type="button" class="rounded px-2 py-1 text-sm text-cv-grey transition hover:bg-cv-green/10 hover:text-cv-green" aria-label="Redo">↻</button>
+            <button type="button" class="rounded px-2 py-1 text-sm text-cv-grey transition hover:bg-cv-green/10 hover:text-cv-green" aria-label="Undo" (mousedown)="keepFieldFocus($event)">↺</button>
+            <button type="button" class="rounded px-2 py-1 text-sm text-cv-grey transition hover:bg-cv-green/10 hover:text-cv-green" aria-label="Redo" (mousedown)="keepFieldFocus($event)">↻</button>
           </div>
         </div>
       </div>
@@ -159,44 +168,56 @@
           <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Eyebrow</label>
           <input
             class="mb-3 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [ngClass]="fieldClassMap('heroEyebrow')"
+            [style.fontSize]="fieldFontSize('heroEyebrow')"
             [value]="form.heroEyebrow"
+            (focus)="setActiveField('heroEyebrow')"
             (input)="onInput('heroEyebrow', $event)"
           />
           <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Title line 1</label>
           <input
             class="mb-3 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
-            [ngClass]="previewClassMap"
-            [style.fontSize]="selectedSize"
+            [ngClass]="fieldClassMap('heroTitleTop')"
+            [style.fontSize]="fieldFontSize('heroTitleTop')"
             [value]="form.heroTitleTop"
+            (focus)="setActiveField('heroTitleTop')"
             (input)="onInput('heroTitleTop', $event)"
           />
           <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Title line 2</label>
           <input
             class="mb-3 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
-            [ngClass]="previewClassMap"
-            [style.fontSize]="selectedSize"
+            [ngClass]="fieldClassMap('heroTitleBottom')"
+            [style.fontSize]="fieldFontSize('heroTitleBottom')"
             [value]="form.heroTitleBottom"
+            (focus)="setActiveField('heroTitleBottom')"
             (input)="onInput('heroTitleBottom', $event)"
           />
           <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Subtext</label>
           <textarea
             rows="3"
             class="w-full resize-y border border-cv-grey/25 bg-white/70 p-2 text-sm text-cv-grey outline-none focus:border-cv-green"
-            [ngClass]="previewClassMap"
-            [style.fontSize]="selectedSize"
+            [ngClass]="fieldClassMap('heroBody')"
+            [style.fontSize]="fieldFontSize('heroBody')"
             [value]="form.heroBody"
+            (focus)="setActiveField('heroBody')"
             (input)="onInput('heroBody', $event)"
           ></textarea>
           <label class="mb-1 mt-3 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Primary CTA</label>
           <input
             class="mb-2 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [ngClass]="fieldClassMap('heroPrimaryCta')"
+            [style.fontSize]="fieldFontSize('heroPrimaryCta')"
             [value]="form.heroPrimaryCta"
+            (focus)="setActiveField('heroPrimaryCta')"
             (input)="onInput('heroPrimaryCta', $event)"
           />
           <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Secondary CTA</label>
           <input
             class="w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [ngClass]="fieldClassMap('heroSecondaryCta')"
+            [style.fontSize]="fieldFontSize('heroSecondaryCta')"
             [value]="form.heroSecondaryCta"
+            (focus)="setActiveField('heroSecondaryCta')"
             (input)="onInput('heroSecondaryCta', $event)"
           />
         </article>
@@ -206,20 +227,29 @@
           <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Heading line 1</label>
           <input
             class="mb-3 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [ngClass]="fieldClassMap('philosophyHeadingLine1')"
+            [style.fontSize]="fieldFontSize('philosophyHeadingLine1')"
             [value]="form.philosophyHeadingLine1"
+            (focus)="setActiveField('philosophyHeadingLine1')"
             (input)="onInput('philosophyHeadingLine1', $event)"
           />
           <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Accent word</label>
           <input
             class="mb-3 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [ngClass]="fieldClassMap('philosophyHeadingAccent')"
+            [style.fontSize]="fieldFontSize('philosophyHeadingAccent')"
             [value]="form.philosophyHeadingAccent"
+            (focus)="setActiveField('philosophyHeadingAccent')"
             (input)="onInput('philosophyHeadingAccent', $event)"
           />
           <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Intro</label>
           <textarea
             rows="5"
             class="w-full resize-y border border-cv-grey/25 bg-white/70 p-2 text-sm text-cv-grey outline-none focus:border-cv-green"
+            [ngClass]="fieldClassMap('philosophyIntro')"
+            [style.fontSize]="fieldFontSize('philosophyIntro')"
             [value]="form.philosophyIntro"
+            (focus)="setActiveField('philosophyIntro')"
             (input)="onInput('philosophyIntro', $event)"
           ></textarea>
         </article>
@@ -232,27 +262,39 @@
           <textarea
             rows="2"
             class="mb-3 w-full resize-y border border-cv-grey/25 bg-white/70 p-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [ngClass]="fieldClassMap('philosophyQuote')"
+            [style.fontSize]="fieldFontSize('philosophyQuote')"
             [value]="form.philosophyQuote"
+            (focus)="setActiveField('philosophyQuote')"
             (input)="onInput('philosophyQuote', $event)"
           ></textarea>
           <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Quote label</label>
           <input
             class="mb-3 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [ngClass]="fieldClassMap('philosophyQuoteLabel')"
+            [style.fontSize]="fieldFontSize('philosophyQuoteLabel')"
             [value]="form.philosophyQuoteLabel"
+            (focus)="setActiveField('philosophyQuoteLabel')"
             (input)="onInput('philosophyQuoteLabel', $event)"
           />
           <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Paragraph 1</label>
           <textarea
             rows="3"
             class="mb-3 w-full resize-y border border-cv-grey/25 bg-white/70 p-2 text-sm text-cv-grey outline-none focus:border-cv-green"
+            [ngClass]="fieldClassMap('philosophyParagraph1')"
+            [style.fontSize]="fieldFontSize('philosophyParagraph1')"
             [value]="form.philosophyParagraph1"
+            (focus)="setActiveField('philosophyParagraph1')"
             (input)="onInput('philosophyParagraph1', $event)"
           ></textarea>
           <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Paragraph 2</label>
           <textarea
             rows="3"
             class="w-full resize-y border border-cv-grey/25 bg-white/70 p-2 text-sm text-cv-grey outline-none focus:border-cv-green"
+            [ngClass]="fieldClassMap('philosophyParagraph2')"
+            [style.fontSize]="fieldFontSize('philosophyParagraph2')"
             [value]="form.philosophyParagraph2"
+            (focus)="setActiveField('philosophyParagraph2')"
             (input)="onInput('philosophyParagraph2', $event)"
           ></textarea>
         </article>
@@ -263,19 +305,28 @@
           <textarea
             rows="5"
             class="mb-3 w-full resize-y border border-cv-grey/25 bg-white/70 p-2 text-sm text-cv-grey outline-none focus:border-cv-green"
+            [ngClass]="fieldClassMap('testimonialQuote')"
+            [style.fontSize]="fieldFontSize('testimonialQuote')"
             [value]="form.testimonialQuote"
+            (focus)="setActiveField('testimonialQuote')"
             (input)="onInput('testimonialQuote', $event)"
           ></textarea>
           <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Name</label>
           <input
             class="mb-3 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [ngClass]="fieldClassMap('testimonialName')"
+            [style.fontSize]="fieldFontSize('testimonialName')"
             [value]="form.testimonialName"
+            (focus)="setActiveField('testimonialName')"
             (input)="onInput('testimonialName', $event)"
           />
           <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Subtitle</label>
           <input
             class="w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [ngClass]="fieldClassMap('testimonialSubtitle')"
+            [style.fontSize]="fieldFontSize('testimonialSubtitle')"
             [value]="form.testimonialSubtitle"
+            (focus)="setActiveField('testimonialSubtitle')"
             (input)="onInput('testimonialSubtitle', $event)"
           />
         </article>
@@ -288,13 +339,19 @@
             <p class="text-[0.52rem] uppercase tracking-[0.16em] text-cv-muted">Card Title</p>
             <input
               class="mt-1 w-full border-0 border-b border-cv-grey/30 bg-transparent text-sm font-semibold text-cv-charcoal outline-none focus:border-cv-green"
+              [ngClass]="fieldClassMap('valuesCard1Title')"
+              [style.fontSize]="fieldFontSize('valuesCard1Title')"
               [value]="form.valuesCard1Title"
+              (focus)="setActiveField('valuesCard1Title')"
               (input)="onInput('valuesCard1Title', $event)"
             />
             <textarea
               rows="2"
               class="mt-2 w-full resize-y border-0 bg-transparent text-xs text-cv-grey outline-none"
+              [ngClass]="fieldClassMap('valuesCard1Body')"
+              [style.fontSize]="fieldFontSize('valuesCard1Body')"
               [value]="form.valuesCard1Body"
+              (focus)="setActiveField('valuesCard1Body')"
               (input)="onInput('valuesCard1Body', $event)"
             ></textarea>
           </article>
@@ -302,13 +359,19 @@
             <p class="text-[0.52rem] uppercase tracking-[0.16em] text-cv-muted">Card Title</p>
             <input
               class="mt-1 w-full border-0 border-b border-cv-grey/30 bg-transparent text-sm font-semibold text-cv-charcoal outline-none focus:border-cv-green"
+              [ngClass]="fieldClassMap('valuesCard2Title')"
+              [style.fontSize]="fieldFontSize('valuesCard2Title')"
               [value]="form.valuesCard2Title"
+              (focus)="setActiveField('valuesCard2Title')"
               (input)="onInput('valuesCard2Title', $event)"
             />
             <textarea
               rows="2"
               class="mt-2 w-full resize-y border-0 bg-transparent text-xs text-cv-grey outline-none"
+              [ngClass]="fieldClassMap('valuesCard2Body')"
+              [style.fontSize]="fieldFontSize('valuesCard2Body')"
               [value]="form.valuesCard2Body"
+              (focus)="setActiveField('valuesCard2Body')"
               (input)="onInput('valuesCard2Body', $event)"
             ></textarea>
           </article>
@@ -316,13 +379,19 @@
             <p class="text-[0.52rem] uppercase tracking-[0.16em] text-cv-muted">Card Title</p>
             <input
               class="mt-1 w-full border-0 border-b border-cv-grey/30 bg-transparent text-sm font-semibold text-cv-charcoal outline-none focus:border-cv-green"
+              [ngClass]="fieldClassMap('valuesCard3Title')"
+              [style.fontSize]="fieldFontSize('valuesCard3Title')"
               [value]="form.valuesCard3Title"
+              (focus)="setActiveField('valuesCard3Title')"
               (input)="onInput('valuesCard3Title', $event)"
             />
             <textarea
               rows="2"
               class="mt-2 w-full resize-y border-0 bg-transparent text-xs text-cv-grey outline-none"
+              [ngClass]="fieldClassMap('valuesCard3Body')"
+              [style.fontSize]="fieldFontSize('valuesCard3Body')"
               [value]="form.valuesCard3Body"
+              (focus)="setActiveField('valuesCard3Body')"
               (input)="onInput('valuesCard3Body', $event)"
             ></textarea>
           </article>
@@ -330,13 +399,19 @@
             <p class="text-[0.52rem] uppercase tracking-[0.16em] text-cv-muted">Card Title</p>
             <input
               class="mt-1 w-full border-0 border-b border-cv-grey/30 bg-transparent text-sm font-semibold text-cv-charcoal outline-none focus:border-cv-green"
+              [ngClass]="fieldClassMap('valuesCard4Title')"
+              [style.fontSize]="fieldFontSize('valuesCard4Title')"
               [value]="form.valuesCard4Title"
+              (focus)="setActiveField('valuesCard4Title')"
               (input)="onInput('valuesCard4Title', $event)"
             />
             <textarea
               rows="2"
               class="mt-2 w-full resize-y border-0 bg-transparent text-xs text-cv-grey outline-none"
+              [ngClass]="fieldClassMap('valuesCard4Body')"
+              [style.fontSize]="fieldFontSize('valuesCard4Body')"
               [value]="form.valuesCard4Body"
+              (focus)="setActiveField('valuesCard4Body')"
               (input)="onInput('valuesCard4Body', $event)"
             ></textarea>
           </article>
@@ -350,7 +425,10 @@
           <textarea
             rows="4"
             class="w-full resize-y border border-cv-grey/25 bg-white/70 p-2 text-sm italic text-cv-charcoal outline-none focus:border-cv-green"
+            [ngClass]="fieldClassMap('philosophyPullQuote')"
+            [style.fontSize]="fieldFontSize('philosophyPullQuote')"
             [value]="form.philosophyPullQuote"
+            (focus)="setActiveField('philosophyPullQuote')"
             (input)="onInput('philosophyPullQuote', $event)"
           ></textarea>
           <label class="mb-1 mt-3 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Attribution</label>
@@ -366,21 +444,40 @@
           <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Headline</label>
           <input
             class="mb-3 w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [ngClass]="fieldClassMap('chartersTitle')"
+            [style.fontSize]="fieldFontSize('chartersTitle')"
             [value]="form.chartersTitle"
+            (focus)="setActiveField('chartersTitle')"
             (input)="onInput('chartersTitle', $event)"
           />
           <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Body</label>
           <textarea
             rows="3"
             class="mb-3 w-full resize-y border border-cv-grey/25 bg-white/70 p-2 text-sm text-cv-grey outline-none focus:border-cv-green"
+            [ngClass]="fieldClassMap('chartersBody')"
+            [style.fontSize]="fieldFontSize('chartersBody')"
             [value]="form.chartersBody"
+            (focus)="setActiveField('chartersBody')"
             (input)="onInput('chartersBody', $event)"
           ></textarea>
           <label class="mb-1 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Button label</label>
           <input
             class="w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [ngClass]="fieldClassMap('chartersButton')"
+            [style.fontSize]="fieldFontSize('chartersButton')"
             [value]="form.chartersButton"
+            (focus)="setActiveField('chartersButton')"
             (input)="onInput('chartersButton', $event)"
+          />
+          <label class="mb-1 mt-3 block text-[0.6rem] uppercase tracking-[0.16em] text-cv-muted">Button link (URL)</label>
+          <input
+            class="w-full border-0 border-b border-cv-grey/35 bg-transparent py-2 text-sm text-cv-charcoal outline-none focus:border-cv-green"
+            [ngClass]="fieldClassMap('chartersButtonLink')"
+            [style.fontSize]="fieldFontSize('chartersButtonLink')"
+            [value]="form.chartersButtonLink"
+            (focus)="setActiveField('chartersButtonLink')"
+            (input)="onInput('chartersButtonLink', $event)"
+            placeholder="/shop, https://..., or www..."
           />
         </article>
       </div>

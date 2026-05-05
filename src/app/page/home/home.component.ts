@@ -96,6 +96,22 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.scrollToSectionId(sectionId);
   }
 
+  get chartersButtonHref(): string {
+    const raw = this.content.chartersButtonLink?.trim();
+    if (!raw) {
+      return '#hero';
+    }
+    if (raw.startsWith('http://') || raw.startsWith('https://') || raw.startsWith('/') || raw.startsWith('#')) {
+      return raw;
+    }
+    // Allow admins to paste "www.example.com" without protocol.
+    return `https://${raw}`;
+  }
+
+  get chartersButtonIsExternal(): boolean {
+    return this.chartersButtonHref.startsWith('http://') || this.chartersButtonHref.startsWith('https://');
+  }
+
   /** Native smooth scroll (respects reduced-motion + section `scroll-mt-*`) */
   private scrollToSectionId(sectionId: 'hero' | 'philosophy' | 'charters'): void {
     const el = document.getElementById(sectionId);
