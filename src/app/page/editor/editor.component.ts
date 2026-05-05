@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { Auth, signOut } from '@angular/fire/auth';
 
 import { DEFAULT_HOME_PAGE_CONTENT, HomePageContent } from '../../core/models/home-page-content';
-import { AdminUsersService, ManagedUser } from '../../core/services/admin-users.service';
 import { HomeContentStorageService } from '../../core/services/home-content-storage.service';
 
 @Component({
@@ -19,13 +18,6 @@ export class EditorComponent implements OnInit {
   textAlign: 'left' | 'center' | 'right' = 'left';
   selectedFont = 'Inter';
   selectedSize = '16px';
-  pendingManagedName = '';
-  pendingManagedEmail = '';
-  pendingManagedRole: ManagedUser['role'] = 'Editor';
-  pendingManagedTempPassword = '';
-  managedUsers: ManagedUser[] = [];
-  adminMessage = '';
-  syncingAdmins = false;
 
   form: HomePageContent = { ...DEFAULT_HOME_PAGE_CONTENT };
   baseline: HomePageContent = { ...DEFAULT_HOME_PAGE_CONTENT };
@@ -33,8 +25,7 @@ export class EditorComponent implements OnInit {
   constructor(
     private readonly auth: Auth,
     private readonly router: Router,
-    private readonly homeContentStorage: HomeContentStorageService,
-    private readonly adminUsersService: AdminUsersService
+    private readonly homeContentStorage: HomeContentStorageService
   ) {}
 
   ngOnInit(): void {
@@ -44,7 +35,6 @@ export class EditorComponent implements OnInit {
       this.hasChanges = false;
       this.saveMessage = '';
     });
-    void this.refreshManagedUsers();
   }
 
   async logout(): Promise<void> {
@@ -83,90 +73,10 @@ export class EditorComponent implements OnInit {
     this.saveMessage = '';
   }
 
-  async addManagedUser(): Promise<void> {
-    const email = this.pendingManagedEmail.trim();
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const name = this.pendingManagedName.trim();
-    const temporaryPassword = this.pendingManagedTempPassword.trim();
-
-    if (!email || !name || !temporaryPassword) {
-      this.adminMessage = 'Enter name, email, and a temporary password.';
-      return;
-    }
-    if (!emailPattern.test(email)) {
-      this.adminMessage = 'Enter a valid email address.';
-      return;
-    }
-    if (temporaryPassword.length < 8) {
-      this.adminMessage = 'Temporary password must be at least 8 characters.';
-      return;
-    }
-
-    try {
-      await this.adminUsersService.createUser({
-        email,
-        displayName: name,
-        role: this.pendingManagedRole,
-        temporaryPassword
-      });
-      this.pendingManagedName = '';
-      this.pendingManagedEmail = '';
-      this.pendingManagedRole = 'Editor';
-      this.pendingManagedTempPassword = '';
-      this.adminMessage = 'User created in Firebase Auth. They must change password on first sign-in.';
-      await this.refreshManagedUsers();
-    } catch {
-      this.adminMessage = 'Could not create user. Confirm you are signed in as an owner and try again.';
-    }
-  }
-
-  async deleteManagedUser(uid: string): Promise<void> {
-    try {
-      await this.adminUsersService.deleteUser(uid);
-      this.adminMessage = 'User deleted.';
-      await this.refreshManagedUsers();
-    } catch {
-      this.adminMessage = 'Delete failed.';
-    }
-  }
-
-  async saveManagedUser(user: ManagedUser): Promise<void> {
-    try {
-      await this.adminUsersService.updateUser({
-        uid: user.uid,
-        displayName: user.displayName,
-        role: user.role
-      });
-      this.adminMessage = 'User updated.';
-    } catch {
-      this.adminMessage = 'Could not update user.';
-    }
-  }
-
-  async resetManagedPassword(uid: string): Promise<void> {
-    const temporaryPassword = window.prompt('Enter new temporary password (min 8 characters):', '');
-    if (!temporaryPassword) {
-      return;
-    }
-    if (temporaryPassword.trim().length < 8) {
-      this.adminMessage = 'Temporary password must be at least 8 characters.';
-      return;
-    }
-
-    try {
-      await this.adminUsersService.resetPassword(uid, temporaryPassword.trim());
-      this.adminMessage = 'Temporary password set. User will be prompted to change it.';
-      await this.refreshManagedUsers();
-    } catch {
-      this.adminMessage = 'Could not reset password.';
-    }
-  }
-
   discardChanges(): void {
     this.form = this.cloneContent(this.baseline);
     this.hasChanges = false;
     this.saveMessage = 'Changes discarded.';
-    this.adminMessage = '';
   }
 
   async publishChanges(): Promise<void> {
@@ -179,7 +89,6 @@ export class EditorComponent implements OnInit {
       this.baseline = this.cloneContent(this.form);
       this.hasChanges = false;
       this.saveMessage = 'Published to Firebase Storage.';
-      this.adminMessage = '';
     } catch {
       this.saveMessage =
         'Could not save. Sign in to the editor and allow Storage writes for authenticated users.';
@@ -199,38 +108,10 @@ export class EditorComponent implements OnInit {
     };
   }
 
-  getAdminInitials(name: string): string {
-    const parts = name.trim().split(/\s+/).filter(Boolean);
-    if (parts.length === 0) {
-      return '--';
-    }
-    if (parts.length === 1) {
-      return parts[0].slice(0, 2).toUpperCase();
-    }
-    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
-  }
-
-  private markDirty(): void {
-    this.hasChanges = true;
-    this.saveMessage = '';
-  }
-
   private cloneContent(content: HomePageContent): HomePageContent {
     return {
       ...content,
       adminUsers: content.adminUsers.map((user) => ({ ...user }))
     };
-  }
-
-  private async refreshManagedUsers(): Promise<void> {
-    this.syncingAdmins = true;
-    try {
-      this.managedUsers = await this.adminUsersService.listUsers();
-      this.adminMessage = '';
-    } catch {
-      this.adminMessage = 'Could not load users from Firebase.';
-    } finally {
-      this.syncingAdmins = false;
-    }
   }
 }
