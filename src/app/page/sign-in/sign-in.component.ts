@@ -16,28 +16,21 @@ export class SignInComponent {
     private readonly route: ActivatedRoute,
     private readonly zone: NgZone,
     private readonly cdr: ChangeDetectorRef
-  ) {
-    console.log('[SignIn] component ready', { hasAuth: !!this.auth });
-  }
+  ) {}
 
   onSubmitForm(event: Event): void {
-    console.log('[SignIn] onSubmitForm (e.g. Enter in field)', { type: event.type });
     event.preventDefault();
     const form = (event.target as HTMLElement | null)?.closest('form');
     if (form) {
       void this.signIn(form);
-    } else {
-      console.warn('[SignIn] onSubmitForm: no form found from event.target');
     }
   }
 
   onSignInClick(form: HTMLFormElement): void {
-    console.log('[SignIn] onSignInClick (button)');
     void this.signIn(form);
   }
 
   private async signIn(form: HTMLFormElement): Promise<void> {
-    console.log('[SignIn] signIn() started');
     this.errorMessage = '';
     this.cdr.markForCheck();
 
@@ -46,14 +39,7 @@ export class SignInComponent {
     const address = rawEmail.trim();
     const secret = rawPassword;
 
-    console.log('[SignIn] form values read', {
-      emailLength: address.length,
-      passwordLength: secret.length,
-      emailPreview: address ? `${address.slice(0, 2)}…@${address.split('@')[1] ?? '?'}` : '(empty)'
-    });
-
     if (!address || !secret) {
-      console.warn('[SignIn] validation failed: missing email or password');
       this.errorMessage = 'Enter your email and password.';
       this.cdr.detectChanges();
       return;
@@ -61,13 +47,11 @@ export class SignInComponent {
 
     this.submitting = true;
     this.cdr.detectChanges();
-    console.log('[SignIn] calling signInWithEmailAndPassword…');
 
     try {
       await this.zone.run(() =>
         signInWithEmailAndPassword(this.auth, address, secret)
       );
-      console.log('[SignIn] Firebase sign-in succeeded');
       const signedInUser = this.auth.currentUser;
       const tokenResult = signedInUser ? await signedInUser.getIdTokenResult(true) : null;
       const mustChangePassword = tokenResult?.claims['mustChangePassword'] === true;
@@ -78,11 +62,8 @@ export class SignInComponent {
         await this.router.navigateByUrl('/change-password');
         return;
       }
-      console.log('[SignIn] navigating', { returnUrl, rawReturnUrl: this.route.snapshot.queryParamMap.get('returnUrl') });
       await this.router.navigateByUrl(returnUrl);
-      console.log('[SignIn] navigateByUrl resolved');
     } catch (err: unknown) {
-      console.error('[SignIn] Firebase sign-in error', err);
       const code =
         typeof err === 'object' &&
         err !== null &&
@@ -108,11 +89,9 @@ export class SignInComponent {
         this.errorMessage =
           code !== '' ? `Sign-in failed (${code}).` : 'Could not sign in. Please try again.';
       }
-      console.log('[SignIn] user-facing errorMessage set', { code, errorMessage: this.errorMessage });
     } finally {
       this.submitting = false;
       this.cdr.detectChanges();
-      console.log('[SignIn] finally: submitting=', this.submitting);
     }
   }
 

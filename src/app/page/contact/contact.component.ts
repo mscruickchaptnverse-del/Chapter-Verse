@@ -8,7 +8,6 @@ import {
   ViewChild
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import emailjs from '@emailjs/browser';
 import { Subscription } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
@@ -33,6 +32,7 @@ export class ContactComponent implements AfterViewInit, OnDestroy {
   @ViewChild('navHome') private navHome?: ElementRef<HTMLElement>;
   @ViewChild('navContact') private navContact?: ElementRef<HTMLElement>;
   private navSub?: Subscription;
+  private emailJs?: typeof import('@emailjs/browser').default;
 
   constructor(
     private readonly router: Router,
@@ -40,9 +40,6 @@ export class ContactComponent implements AfterViewInit, OnDestroy {
   ) {}
 
   ngAfterViewInit(): void {
-    if (this.emailJsConfigured()) {
-      emailjs.init({ publicKey: environment.emailjs.publicKey });
-    }
     this.updateNavState();
     this.updateIndicator();
     this.navSub = this.router.events.subscribe((event) => {
@@ -120,7 +117,8 @@ export class ContactComponent implements AfterViewInit, OnDestroy {
     this.submitStatus = 'sending';
 
     try {
-      await emailjs.send(environment.emailjs.serviceId, environment.emailjs.templateId, {
+      const emailJs = await this.loadEmailJs();
+      await emailJs.send(environment.emailjs.serviceId, environment.emailjs.templateId, {
         from_name: name,
         from_email: address,
         message: body
@@ -148,6 +146,15 @@ export class ContactComponent implements AfterViewInit, OnDestroy {
 
   private isValidEmail(value: string): boolean {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
+
+  private async loadEmailJs(): Promise<typeof import('@emailjs/browser').default> {
+    if (!this.emailJs) {
+      const module = await import('@emailjs/browser');
+      this.emailJs = module.default;
+      this.emailJs.init({ publicKey: environment.emailjs.publicKey });
+    }
+    return this.emailJs;
   }
 
   private describeEmailJsError(err: unknown): string {

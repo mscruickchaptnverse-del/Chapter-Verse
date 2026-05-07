@@ -65,38 +65,23 @@
     (click)="closeMobileMenu()"
   >
     <div
-      class="absolute inset-0 bg-black/20 backdrop-blur-[1px] transition-opacity duration-300"
+      class="absolute inset-0 bg-black/35 backdrop-blur-[1px] transition-opacity duration-300"
       [class.opacity-0]="!mobileMenuOpen"
       [class.opacity-100]="mobileMenuOpen"
     ></div>
     <nav
-      class="absolute left-0 top-0 h-full w-[min(82vw,22rem)] border-r border-cv-sage-accent/20 bg-cv-shell/95 px-6 pb-8 pt-24 shadow-2xl backdrop-blur-md transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+      class="absolute left-0 top-0 h-full w-[min(84vw,23rem)] border-r border-cv-sage-accent/20 bg-cv-shell/95 pb-8 shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
       [class.-translate-x-full]="!mobileMenuOpen"
       [class.translate-x-0]="mobileMenuOpen"
       aria-label="Mobile primary"
       (click)="$event.stopPropagation()"
     >
-      <div class="flex flex-col gap-4 text-sm font-semibold">
-        <a
-          routerLink="/"
-          class="w-fit border-b-2 pb-1 transition hover:text-cv-ink"
-          [class.border-cv-ink]="activeNav === 'home'"
-          [class.border-transparent]="activeNav !== 'home'"
-          [class.text-cv-ink]="activeNav === 'home'"
-          [class.text-cv-grey]="activeNav !== 'home'"
-          (click)="closeMobileMenu()"
-          >Home</a
-        >
-        <a
-          routerLink="/contact"
-          class="w-fit border-b-2 pb-1 transition hover:text-cv-ink"
-          [class.border-cv-ink]="activeNav === 'contact'"
-          [class.border-transparent]="activeNav !== 'contact'"
-          [class.text-cv-ink]="activeNav === 'contact'"
-          [class.text-cv-grey]="activeNav !== 'contact'"
-          (click)="closeMobileMenu()"
-          >Contact</a
-        >
+      <div class="bg-gradient-to-br from-cv-sage-accent to-cv-green px-6 pb-5 pt-10 text-white">
+        <p class="font-serif text-3xl italic leading-none">Chapter &amp; Verse</p>
+      </div>
+      <div class="flex flex-col divide-y divide-neutral-200">
+        <a routerLink="/" class="px-6 py-4 text-base font-semibold text-cv-charcoal" (click)="closeMobileMenu()">Home</a>
+        <a routerLink="/contact" class="px-6 py-4 text-base font-semibold text-cv-grey" (click)="closeMobileMenu()">Contact</a>
       </div>
     </nav>
   </div>
@@ -174,7 +159,7 @@
           {{ submitErrorDetail }}
         </div>
         <div class="flex flex-col gap-[0.45rem]">
-          <label class="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cv-muted" for="contact-name"
+          <label class="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cv-grey" for="contact-name"
             >Full name</label
           >
           <input
@@ -189,7 +174,7 @@
           />
         </div>
         <div class="flex flex-col gap-[0.45rem]">
-          <label class="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cv-muted" for="contact-email"
+          <label class="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cv-grey" for="contact-email"
             >Email address</label
           >
           <input
@@ -204,7 +189,7 @@
           />
         </div>
         <div class="flex flex-1 flex-col gap-[0.45rem]">
-          <label class="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cv-muted" for="contact-message"
+          <label class="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-cv-grey" for="contact-message"
             >Your message</label
           >
           <textarea

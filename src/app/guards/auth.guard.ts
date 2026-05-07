@@ -11,17 +11,11 @@ export const authGuard: CanActivateFn = (_route, state) => {
     take(1),
     map((u): boolean | UrlTree => {
       if (u) {
-        console.log('[AuthGuard] allowed', { path: state.url, uid: u.uid });
         return true;
       }
-      const tree = router.createUrlTree(['/sign-in'], {
+      return router.createUrlTree(['/sign-in'], {
         queryParams: { returnUrl: state.url }
       });
-      console.log('[AuthGuard] redirect to sign-in', {
-        attempted: state.url,
-        returnUrlQuery: state.url
-      });
-      return tree;
     })
   );
 };
