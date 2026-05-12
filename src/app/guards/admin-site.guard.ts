@@ -8,7 +8,13 @@ import {
 } from '../core/site-host';
 import { environment } from '../../environments/environment';
 
-/** Allows sign-in/editor/password only on admin hostnames; other hosts are sent to the canonical admin origin. */
+function normalizedPath(url: string): string {
+  const path = url.split('?')[0].split('#')[0] || '/';
+  const trimmed = path.replace(/\/+$/, '');
+  return trimmed === '' ? '/' : trimmed;
+}
+
+/** Allows sign-in/editor/password only on admin hostnames; public host `/sign-in` stays on-site and goes home. */
 export const adminSiteGuard: CanActivateFn = (_route, state) => {
   if (!siteHostSplitEnabled()) {
     return true;
@@ -20,6 +26,10 @@ export const adminSiteGuard: CanActivateFn = (_route, state) => {
     return true;
   }
   if (isPublicHostname()) {
+    if (normalizedPath(state.url) === '/sign-in') {
+      void inject(Router).navigate(['/'], { replaceUrl: true });
+      return false;
+    }
     const admin = environment.adminSiteOrigin?.replace(/\/$/, '');
     if (admin) {
       window.location.assign(admin + state.url);
