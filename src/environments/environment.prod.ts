@@ -2,10 +2,10 @@ export const environment = {
   production: true,
   /** Client site: .com — add both apex and www in Firebase Auth “Authorized domains”. */
   publicHostnames: ['chaptnverse.com', 'www.chaptnverse.com'],
-  /** Admin site: .org */
-  adminHostnames: ['chaptnverse.org', 'www.chaptnverse.org'],
+  /** Admin site: this subdomain only (not apex .org). Add to Firebase Auth authorized domains. */
+  adminHostnames: ['admin.chaptnverse.org'],
   publicSiteOrigin: 'https://chaptnverse.com',
-  adminSiteOrigin: 'https://chaptnverse.org',
+  adminSiteOrigin: 'https://admin.chaptnverse.org',
   firebase: {
     apiKey: 'AIzaSyCkAyT335OBp7ooP4SlIs4K5t-iAb37qSk',
     authDomain: 'chapter-verse-ec0ea.firebaseapp.com',

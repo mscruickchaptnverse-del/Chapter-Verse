@@ -2,7 +2,7 @@ export const environment = {
   production: false,
   /**
    * Split marketing vs admin by hostname (leave empty for local dev — all routes on one host).
-   * Example: publicHostnames: ['www.example.com','example.com'], adminHostnames: ['admin.example.com']
+   * Example: publicHostnames: ['www.example.com','example.com'], adminHostnames: ['admin.example.org']
    */
   publicHostnames: [] as string[],
   adminHostnames: [] as string[],

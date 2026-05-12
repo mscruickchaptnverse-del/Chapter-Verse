@@ -31,3 +31,29 @@ export function isPublicHostname(host: string = currentHostname()): boolean {
   }
   return !isAdminHostname(host);
 }
+
+/**
+ * If the admin host is `admin.example.com`, send `www.admin.example.com` to `adminSiteOrigin`
+ * so admin routes stay on one hostname.
+ */
+export function redirectToCanonicalAdminIfWwwSubdomain(pathWithQuery: string): boolean {
+  if (typeof window === 'undefined' || !siteHostSplitEnabled()) {
+    return false;
+  }
+  const base = environment.adminSiteOrigin?.replace(/\/$/, '');
+  if (!base) {
+    return false;
+  }
+  let apex: string;
+  try {
+    apex = new URL(base).hostname.toLowerCase();
+  } catch {
+    return false;
+  }
+  const host = currentHostname();
+  if (host === `www.${apex}`) {
+    window.location.replace(base + pathWithQuery);
+    return true;
+  }
+  return false;
+}
