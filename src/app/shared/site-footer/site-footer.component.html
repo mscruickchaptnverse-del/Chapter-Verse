@@ -1,4 +1,6 @@
-<footer class="border-t border-cv-green/10 bg-cv-footer-bg/85 px-6 py-16 backdrop-blur-sm md:py-20">
+<footer
+  class="border-t border-cv-green/10 bg-cv-footer-bg/85 px-[clamp(1rem,4vw,1.5rem)] py-12 backdrop-blur-sm sm:py-16 md:py-20"
+>
   <div class="mx-auto max-w-4xl text-center">
     <p class="font-serif text-xl font-semibold text-cv-charcoal md:text-2xl">Chapter &amp; Verse</p>
     <p class="mx-auto mt-6 max-w-2xl text-[0.62rem] font-medium uppercase leading-relaxed tracking-[0.22em] text-neutral-700">
@@ -9,10 +11,22 @@
       <a href="#" class="border-b border-cv-charcoal/25 pb-0.5 text-neutral-700 no-underline transition hover:text-cv-sage-accent"
         >Terms &amp; Policy</a
       >
-      <a routerLink="/contact" class="border-b border-cv-charcoal/25 pb-0.5 text-neutral-700 no-underline transition hover:text-cv-sage-accent"
+      <a
+        *ngIf="!hideContactUsLink"
+        routerLink="/contact"
+        class="border-b border-cv-charcoal/25 pb-0.5 text-neutral-700 no-underline transition hover:text-cv-sage-accent"
         >Contact Us</a
       >
-      <a routerLink="/sign-in" class="border-b border-cv-charcoal/25 pb-0.5 text-neutral-700 no-underline transition hover:text-cv-sage-accent"
+      <a
+        *ngIf="!hideAdminLink && adminSignInIsExternal"
+        [href]="adminSignInHref"
+        class="border-b border-cv-charcoal/25 pb-0.5 text-neutral-700 no-underline transition hover:text-cv-sage-accent"
+        >Admin</a
+      >
+      <a
+        *ngIf="!hideAdminLink && !adminSignInIsExternal"
+        routerLink="/sign-in"
+        class="border-b border-cv-charcoal/25 pb-0.5 text-neutral-700 no-underline transition hover:text-cv-sage-accent"
         >Admin</a
       >
     </nav>

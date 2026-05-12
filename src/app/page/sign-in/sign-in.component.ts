@@ -2,6 +2,9 @@ import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
 
+import { environment } from '../../../environments/environment';
+import { siteHostSplitEnabled } from '../../core/site-host';
+
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html'
@@ -17,6 +20,14 @@ export class SignInComponent {
     private readonly zone: NgZone,
     private readonly cdr: ChangeDetectorRef
   ) {}
+
+  get publicHomeIsExternal(): boolean {
+    return siteHostSplitEnabled() && !!environment.publicSiteOrigin?.trim();
+  }
+
+  get publicHomeHref(): string {
+    return environment.publicSiteOrigin?.replace(/\/$/, '') ?? '/';
+  }
 
   onSubmitForm(event: Event): void {
     event.preventDefault();

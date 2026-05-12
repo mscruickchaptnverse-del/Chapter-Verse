@@ -1,4 +1,4 @@
-<div class="relative z-0 flex min-h-screen flex-col font-sans text-[15px] text-cv-grey antialiased">
+<div class="relative z-0 flex min-h-screen min-w-0 flex-col overflow-x-hidden font-sans text-[15px] text-cv-grey antialiased">
   <header
     class="border-b border-cv-green/10 bg-cv-shell/80 px-[clamp(1.15rem,3vw,2.25rem)] py-[1.125rem] backdrop-blur-sm"
   >
@@ -91,7 +91,18 @@
       </form>
 
       <p class="mt-8 text-center text-[0.8rem] text-cv-grey">
-        <a routerLink="/" class="font-semibold text-cv-green no-underline hover:underline">Back to home</a>
+        <a
+          *ngIf="publicHomeIsExternal"
+          [href]="publicHomeHref"
+          class="font-semibold text-cv-green no-underline hover:underline"
+          >Back to home</a
+        >
+        <a
+          *ngIf="!publicHomeIsExternal"
+          routerLink="/"
+          class="font-semibold text-cv-green no-underline hover:underline"
+          >Back to home</a
+        >
       </p>
     </section>
   </main>

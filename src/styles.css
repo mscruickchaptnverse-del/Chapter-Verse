@@ -4,7 +4,7 @@
 
 @layer base {
   html {
-    @apply min-h-full scroll-smooth;
+    @apply min-h-full scroll-smooth overflow-x-hidden;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -14,6 +14,11 @@
   }
 
   body {
-    @apply m-0 min-h-screen antialiased;
+    @apply m-0 min-h-screen min-w-0 overflow-x-hidden antialiased;
+  }
+
+  img,
+  video {
+    @apply max-h-none max-w-full;
   }
 }

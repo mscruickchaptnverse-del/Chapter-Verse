@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFunctions, getFunctions } from '@angular/fire/functions';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideStorage, getStorage } from '@angular/fire/storage';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -29,6 +30,7 @@ import { environment } from '../environments/environment';
     BrowserModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore()),
     provideFunctions(() => getFunctions()),
     provideStorage(() => getStorage()),
     AppRoutingModule,

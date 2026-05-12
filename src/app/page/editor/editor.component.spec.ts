@@ -22,7 +22,10 @@ describe('EditorComponent', () => {
           provide: HomeContentStorageService,
           useValue: {
             load: () => of({ ...DEFAULT_HOME_PAGE_CONTENT }),
-            save: async (): Promise<void> => undefined
+            save: async (): Promise<void> => undefined,
+            loadDraftFromFirestore: async (): Promise<null> => null,
+            saveDraft: (): void => undefined,
+            clearDraft: async (): Promise<void> => undefined
           }
         }
       ],

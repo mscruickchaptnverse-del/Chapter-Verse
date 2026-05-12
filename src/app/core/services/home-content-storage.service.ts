@@ -1,106 +1,111 @@
 import { Injectable } from '@angular/core';
-import { Storage, ref, uploadString } from '@angular/fire/storage';
+import { Firestore, deleteDoc, doc, getDoc, serverTimestamp, setDoc } from '@angular/fire/firestore';
 import { Observable, from, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-import { environment } from '../../../environments/environment';
 import {
   DEFAULT_HOME_PAGE_CONTENT,
   HomePageContent,
   mergeHomePageContent
 } from '../models/home-page-content';
 
+/** Firestore paths for homepage CMS (see `firestore.rules`). */
+const PUBLISHED_DOC = ['site', 'homePage'] as const;
+const DRAFT_DOC = ['site', 'homePageDraft'] as const;
+
 /**
- * Persists homepage copy as JSON in Firebase Storage.
- * Set Storage rules so authenticated users can write and the site can read (e.g. public read on this path).
+ * Persists homepage copy in Cloud Firestore (`site/homePage`).
+ * Editor drafts use `site/homePageDraft` (authenticated read/write).
  */
 @Injectable({
   providedIn: 'root'
 })
 export class HomeContentStorageService {
-  private readonly objectPath =
-    environment.homePageStoragePath ?? 'cms/home-page.json';
-  private readonly localDraftKey = 'homePageContent.local';
-  private readonly publicDownloadUrl = this.buildPublicDownloadUrl();
-  private readonly useLocalDraftOnly =
-    typeof window !== 'undefined' &&
-    window.location.hostname === 'localhost' &&
-    !environment.production;
+  private draftSaveTimer: ReturnType<typeof setTimeout> | null = null;
 
-  constructor(private readonly storage: Storage) {}
+  constructor(private readonly firestore: Firestore) {}
 
   load(): Observable<HomePageContent> {
-    if (this.useLocalDraftOnly) {
-      return of(this.loadLocalDraft());
-    }
-    return from(this.fetchPublicJson()).pipe(
-      map((json) => mergeHomePageContent(json)),
-      catchError(() => of(this.loadLocalDraft()))
+    return from(getDoc(doc(this.firestore, ...PUBLISHED_DOC))).pipe(
+      map((snap) => {
+        if (!snap.exists()) {
+          return { ...DEFAULT_HOME_PAGE_CONTENT };
+        }
+        const data = snap.data() as { content?: unknown };
+        return mergeHomePageContent(data.content ?? {});
+      }),
+      catchError(() => of({ ...DEFAULT_HOME_PAGE_CONTENT }))
     );
   }
 
   async save(content: HomePageContent): Promise<void> {
-    if (this.useLocalDraftOnly) {
-      this.saveLocalDraft(content);
-      return;
-    }
-    const storageRef = ref(this.storage, this.objectPath);
-    const body = JSON.stringify(content, null, 2);
-    try {
-      await uploadString(storageRef, body, 'raw', {
-        contentType: 'application/json; charset=utf-8'
-      });
-      this.saveLocalDraft(content);
-    } catch (error) {
-      this.saveLocalDraft(content);
-      throw error;
-    }
+    await setDoc(
+      doc(this.firestore, ...PUBLISHED_DOC),
+      {
+        content,
+        updatedAt: serverTimestamp()
+      },
+      { merge: true }
+    );
+    await this.clearDraftFirestore();
   }
 
-  private async fetchPublicJson(): Promise<unknown> {
-    const response = await fetch(this.publicDownloadUrl, {
-      method: 'GET',
-      mode: 'cors',
-      cache: 'no-store'
-    });
-    if (!response.ok) {
-      throw new Error(`Home content request failed (${response.status}).`);
-    }
-    const text = await response.text();
+  /** Loads editor draft from Firestore (null if none or not permitted). */
+  async loadDraftFromFirestore(): Promise<HomePageContent | null> {
     try {
-      return JSON.parse(text);
+      const snap = await getDoc(doc(this.firestore, ...DRAFT_DOC));
+      if (!snap.exists()) {
+        return null;
+      }
+      const data = snap.data() as { content?: unknown };
+      if (!data.content || typeof data.content !== 'object') {
+        return null;
+      }
+      return mergeHomePageContent(data.content);
     } catch {
-      // Guard legacy bad payloads like "[object Object]" and fall back safely.
-      if (text.trim() === '[object Object]') {
-        return {};
-      }
-      throw new Error('Invalid JSON in home page content file.');
+      return null;
     }
   }
 
-  private buildPublicDownloadUrl(): string {
-    const bucket = environment.firebase.storageBucket;
-    const encodedPath = encodeURIComponent(this.objectPath);
-    return `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodedPath}?alt=media`;
+  /** Debounced draft write to reduce Firestore writes while typing. */
+  saveDraft(content: HomePageContent): void {
+    if (this.draftSaveTimer !== null) {
+      clearTimeout(this.draftSaveTimer);
+    }
+    this.draftSaveTimer = setTimeout(() => {
+      this.draftSaveTimer = null;
+      void this.flushDraft(content);
+    }, 650);
   }
 
-  private loadLocalDraft(): HomePageContent {
+  async clearDraft(): Promise<void> {
+    if (this.draftSaveTimer !== null) {
+      clearTimeout(this.draftSaveTimer);
+      this.draftSaveTimer = null;
+    }
+    await this.clearDraftFirestore();
+  }
+
+  private async flushDraft(content: HomePageContent): Promise<void> {
     try {
-      const raw = window.localStorage.getItem(this.localDraftKey);
-      if (!raw) {
-        return { ...DEFAULT_HOME_PAGE_CONTENT };
-      }
-      if (raw.trim() === '[object Object]') {
-        window.localStorage.removeItem(this.localDraftKey);
-        return { ...DEFAULT_HOME_PAGE_CONTENT };
-      }
-      return mergeHomePageContent(JSON.parse(raw));
+      await setDoc(
+        doc(this.firestore, ...DRAFT_DOC),
+        {
+          content,
+          updatedAt: serverTimestamp()
+        },
+        { merge: true }
+      );
     } catch {
-      return { ...DEFAULT_HOME_PAGE_CONTENT };
+      // Ignore draft persistence failures (offline, rules, etc.).
     }
   }
 
-  private saveLocalDraft(content: HomePageContent): void {
-    window.localStorage.setItem(this.localDraftKey, JSON.stringify(content));
+  private async clearDraftFirestore(): Promise<void> {
+    try {
+      await deleteDoc(doc(this.firestore, ...DRAFT_DOC));
+    } catch {
+      // Missing draft or permission: safe to ignore.
+    }
   }
 }

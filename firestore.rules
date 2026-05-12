@@ -1,0 +1,15 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Live homepage copy (public read; signed-in write for editor publish)
+    match /site/homePage {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Unpublished editor autosave (signed-in only)
+    match /site/homePageDraft {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

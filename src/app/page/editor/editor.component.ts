@@ -41,11 +41,23 @@ export class EditorComponent implements OnInit {
 
   ngOnInit(): void {
     this.homeContentStorage.load().subscribe((data) => {
-      this.form = this.cloneContent(data);
-      this.baseline = this.cloneContent(data);
-      this.hasChanges = false;
-      this.saveMessage = '';
+      void this.applyLoadedContent(data);
     });
+  }
+
+  private async applyLoadedContent(data: HomePageContent): Promise<void> {
+    const draft = await this.homeContentStorage.loadDraftFromFirestore();
+    if (draft) {
+      this.form = this.cloneContent(draft);
+      this.baseline = this.cloneContent(data);
+      this.hasChanges = true;
+      this.saveMessage = 'Draft restored from Firestore.';
+      return;
+    }
+    this.form = this.cloneContent(data);
+    this.baseline = this.cloneContent(data);
+    this.hasChanges = false;
+    this.saveMessage = '';
   }
 
   async logout(): Promise<void> {
@@ -124,12 +136,14 @@ export class EditorComponent implements OnInit {
     const target = event.target as HTMLInputElement | HTMLTextAreaElement;
     this.form = { ...this.form, [key]: target.value };
     this.hasChanges = true;
-    this.saveMessage = '';
+    this.homeContentStorage.saveDraft(this.form);
+    this.saveMessage = 'Draft saved.';
   }
 
-  discardChanges(): void {
+  async discardChanges(): Promise<void> {
     this.form = this.cloneContent(this.baseline);
     this.hasChanges = false;
+    await this.homeContentStorage.clearDraft();
     this.saveMessage = 'Changes discarded.';
   }
 
@@ -142,10 +156,11 @@ export class EditorComponent implements OnInit {
       await this.homeContentStorage.save(this.form);
       this.baseline = this.cloneContent(this.form);
       this.hasChanges = false;
-      this.saveMessage = 'Published to Firebase Storage.';
+      await this.homeContentStorage.clearDraft();
+      this.saveMessage = 'Published to Firestore.';
     } catch {
       this.saveMessage =
-        'Could not save. Sign in to the editor and allow Storage writes for authenticated users.';
+        'Could not save. Sign in to the editor and deploy Firestore rules so signed-in users can write site/homePage.';
     }
   }
 

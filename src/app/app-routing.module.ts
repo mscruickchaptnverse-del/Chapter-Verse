@@ -7,14 +7,16 @@ import { ChangePasswordComponent } from './page/change-password/change-password.
 import { EditorComponent } from './page/editor/editor.component';
 import { HomeComponent } from './page/home/home.component';
 import { SignInComponent } from './page/sign-in/sign-in.component';
+import { adminSiteGuard } from './guards/admin-site.guard';
 import { authGuard } from './guards/auth.guard';
+import { publicSiteGuard } from './guards/public-site.guard';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'editor', component: EditorComponent, canActivate: [authGuard] },
-  { path: 'change-password', component: ChangePasswordComponent, canActivate: [authGuard] },
-  { path: 'sign-in', component: SignInComponent },
-  { path: 'contact', component: ContactComponent },
+  { path: '', component: HomeComponent, canActivate: [publicSiteGuard] },
+  { path: 'contact', component: ContactComponent, canActivate: [publicSiteGuard] },
+  { path: 'sign-in', component: SignInComponent, canActivate: [adminSiteGuard] },
+  { path: 'editor', component: EditorComponent, canActivate: [adminSiteGuard, authGuard] },
+  { path: 'change-password', component: ChangePasswordComponent, canActivate: [adminSiteGuard, authGuard] },
   { path: '**', redirectTo: '' }
 ];
 

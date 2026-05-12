@@ -1,10 +1,12 @@
 <!-- Homepage: Chapter & Verse Charters — cream, sage accent, serif + sans -->
-<div class="relative z-0 min-h-screen font-sans text-cv-charcoal antialiased">
+<div class="relative z-0 min-h-screen min-w-0 overflow-x-hidden font-sans text-cv-charcoal antialiased">
   <!-- Header -->
   <header
     class="sticky top-0 z-50 border-b border-cv-sage-accent/15 bg-cv-cream/75 backdrop-blur-md"
   >
-    <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4 md:gap-4 md:pl-0 md:pr-10 md:py-[1.125rem]">
+    <div
+      class="mx-auto flex min-w-0 max-w-6xl items-center justify-between gap-2 px-[clamp(0.75rem,3vw,1rem)] py-3 sm:gap-3 sm:px-4 sm:py-4 md:gap-4 md:pl-0 md:pr-10 md:py-[1.125rem]"
+    >
       <a routerLink="/" class="group block shrink-0 no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-cv-sage-accent focus-visible:ring-offset-2 md:-ml-8">
         <img
           src="assets/image_2026-03-29_163143943-removebg-preview.png"
@@ -113,34 +115,46 @@
   </div>
 
   <!-- Hero -->
-  <section id="hero" class="scroll-mt-[5rem] px-6 pb-20 pt-16 md:scroll-mt-24 md:pb-28 md:pt-44">
-    <div class="mx-auto -mt-6 max-w-4xl text-center md:-mt-10">
-      <p
-        class="mb-8 text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-neutral-700 md:text-xs"
-      >
-        {{ content.heroEyebrow }}
-      </p>
+  <section
+    id="hero"
+    class="scroll-mt-[5rem] px-[clamp(1rem,4vw,1.5rem)] pb-16 pt-12 sm:pb-20 sm:pt-16 md:scroll-mt-24 md:pb-28 md:pt-44"
+  >
+    <div class="mx-auto -mt-4 min-w-0 max-w-4xl text-center sm:-mt-6 md:-mt-10">
+      <div class="mb-8 flex justify-center md:mb-10">
+        <img
+          src="assets/image_2026-03-29_163143943-removebg-preview.png"
+          width="280"
+          height="120"
+          alt="Chapter &amp; Verse Charters, LLC"
+          class="mx-auto h-auto w-full max-w-[min(70vw,14rem)] object-contain object-center sm:max-w-[16rem] md:max-w-[18rem]"
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+        />
+      </div>
       <h1 class="font-serif font-normal leading-[1.1] tracking-tight text-cv-charcoal">
-        <span class="block text-[2rem] sm:text-4xl md:text-5xl">{{ content.heroTitleTop }}</span>
+        <span class="block text-[clamp(1.5rem,5.2vw+0.4rem,3rem)] sm:text-4xl md:text-5xl">{{ content.heroTitleTop }}</span>
         <span
-          class="mt-3 block bg-gradient-to-r from-neutral-950 to-cv-sage-accent bg-clip-text font-serif text-[2.35rem] italic text-transparent sm:text-5xl md:text-6xl lg:text-7xl"
+          class="mt-2 block bg-gradient-to-r from-neutral-950 to-cv-sage-accent bg-clip-text font-serif text-[clamp(1.65rem,6vw+0.25rem,3.75rem)] italic text-transparent sm:mt-3 sm:text-5xl md:text-6xl lg:text-7xl"
           >{{ content.heroTitleBottom }}</span
         >
       </h1>
-      <p class="mx-auto mt-10 max-w-xl text-base leading-relaxed text-neutral-600 md:text-lg">
+      <p
+        class="mx-auto mt-8 max-w-xl text-[clamp(0.95rem,2.4vw+0.55rem,1.125rem)] leading-relaxed text-neutral-600 sm:mt-10 md:text-lg"
+      >
         {{ content.heroBody }}
       </p>
-      <div class="mt-12 flex flex-col items-center justify-center gap-6 sm:flex-row sm:gap-10">
+      <div class="mt-10 flex w-full max-w-md flex-col items-stretch justify-center gap-4 sm:mx-auto sm:mt-12 sm:max-w-none sm:flex-row sm:items-center sm:justify-center sm:gap-10">
         <a
           href="#charters"
-          class="inline-flex min-w-[14rem] items-center justify-center rounded-full bg-cv-sage-accent px-10 py-4 text-center text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:opacity-95"
+          class="inline-flex w-full min-w-0 items-center justify-center rounded-full bg-cv-sage-accent px-6 py-3.5 text-center text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-white transition hover:opacity-95 sm:w-auto sm:min-w-[12rem] sm:px-10 sm:py-4 sm:text-xs sm:tracking-[0.2em] md:min-w-[14rem]"
           (click)="scrollToSection($event, 'charters')"
         >
           {{ content.heroPrimaryCta }}
         </a>
         <a
           href="#philosophy"
-          class="group inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-cv-charcoal no-underline transition hover:text-cv-sage-accent"
+          class="group inline-flex items-center justify-center gap-2 py-2 text-center text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-cv-charcoal no-underline transition hover:text-cv-sage-accent sm:text-xs sm:tracking-[0.18em]"
           (click)="scrollToSection($event, 'philosophy')"
         >
           {{ content.heroSecondaryCta }}
@@ -153,11 +167,19 @@
   </section>
 
   <!-- Philosophy & detail -->
-  <section id="philosophy" class="scroll-mt-[5rem] border-t border-cv-sage-accent/15 bg-white/25 px-6 py-20 backdrop-blur-[2px] md:scroll-mt-24 md:py-28">
-    <div class="mx-auto max-w-3xl text-center">
-      <h2 class="font-serif text-3xl font-normal leading-tight text-cv-charcoal md:text-4xl">
+  <section
+    id="philosophy"
+    class="scroll-mt-[5rem] border-t border-cv-sage-accent/15 bg-white/25 px-[clamp(1rem,4vw,1.5rem)] py-16 backdrop-blur-[2px] sm:py-20 md:scroll-mt-24 md:py-28"
+  >
+    <div class="mx-auto min-w-0 max-w-3xl text-center">
+      <h2
+        class="font-serif text-[clamp(1.5rem,4vw+0.5rem,2.25rem)] font-normal leading-tight text-cv-charcoal md:text-4xl"
+      >
         <span class="block">{{ content.philosophyHeadingLine1 }}</span>
-        <span class="mt-2 block font-serif italic text-cv-sage-accent md:text-5xl">{{ content.philosophyHeadingAccent }}</span>
+        <span
+          class="mt-2 block font-serif text-[clamp(1.65rem,4.5vw+0.5rem,3rem)] italic text-cv-sage-accent md:text-5xl"
+          >{{ content.philosophyHeadingAccent }}</span
+        >
       </h2>
 
       <figure class="mx-auto my-12 max-w-[5rem] sm:max-w-[8rem] md:max-w-[18rem]">
@@ -195,9 +217,11 @@
       </div>
 
       <div
-        class="mx-auto mt-14 max-w-2xl border border-cv-sage-accent/35 bg-cv-sage-soft px-8 py-10 md:px-12 md:py-12"
+        class="mx-auto mt-10 max-w-2xl border border-cv-sage-accent/35 bg-cv-sage-soft px-[clamp(1rem,5vw,2rem)] py-8 sm:mt-14 sm:py-10 md:px-12 md:py-12"
       >
-        <p class="font-serif text-lg italic leading-relaxed text-cv-charcoal md:text-xl">
+        <p
+          class="font-serif text-[clamp(1rem,2.5vw+0.5rem,1.25rem)] italic leading-relaxed text-cv-charcoal md:text-xl"
+        >
           {{ content.philosophyPullQuote }}
         </p>
       </div>
@@ -205,12 +229,14 @@
   </section>
 
   <!-- Testimonial -->
-  <section class="bg-transparent px-6 py-20 md:py-24">
-    <div class="mx-auto max-w-3xl text-center">
+  <section class="bg-transparent px-[clamp(1rem,4vw,1.5rem)] py-16 md:py-24">
+    <div class="mx-auto min-w-0 max-w-3xl text-center">
       <span class="mb-8 block font-serif text-6xl leading-none text-cv-sage-accent opacity-90 md:text-7xl" aria-hidden="true"
         >&ldquo;</span
       >
-      <blockquote class="font-serif text-xl italic leading-relaxed text-cv-charcoal md:text-2xl">
+      <blockquote
+        class="font-serif text-[clamp(1.05rem,2.8vw+0.35rem,1.5rem)] italic leading-relaxed text-cv-charcoal md:text-2xl"
+      >
         {{ content.testimonialQuote }}
       </blockquote>
       <div class="mt-12 space-y-1">
@@ -221,9 +247,14 @@
   </section>
 
   <!-- Final CTA -->
-  <section id="charters" class="scroll-mt-[5rem] border-y border-white/30 bg-white/35 px-6 py-20 backdrop-blur-sm md:scroll-mt-24 md:py-28">
-    <div class="mx-auto max-w-2xl text-center">
-      <h2 class="font-serif text-3xl font-normal text-cv-charcoal md:text-4xl">{{ content.chartersTitle }}</h2>
+  <section
+    id="charters"
+    class="scroll-mt-[5rem] border-y border-white/30 bg-white/35 px-[clamp(1rem,4vw,1.5rem)] py-16 backdrop-blur-sm sm:py-20 md:scroll-mt-24 md:py-28"
+  >
+    <div class="mx-auto min-w-0 max-w-2xl text-center">
+      <h2 class="font-serif text-[clamp(1.5rem,4vw+0.5rem,2.25rem)] font-normal text-cv-charcoal md:text-4xl">
+        {{ content.chartersTitle }}
+      </h2>
       <p class="mx-auto mt-6 max-w-lg text-base leading-relaxed text-neutral-600">
         {{ content.chartersBody }}
       </p>
@@ -231,7 +262,7 @@
         [attr.href]="chartersButtonHref"
         [attr.target]="chartersButtonIsExternal ? '_blank' : null"
         [attr.rel]="chartersButtonIsExternal ? 'noopener noreferrer' : null"
-        class="mt-10 inline-flex min-w-[12rem] items-center justify-center rounded-lg bg-cv-sage-accent px-10 py-4 text-xs font-semibold uppercase tracking-[0.2em] text-white no-underline transition hover:opacity-95"
+        class="mt-8 inline-flex w-full max-w-xs min-w-0 items-center justify-center rounded-lg bg-cv-sage-accent px-6 py-3.5 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-white no-underline transition hover:opacity-95 sm:mt-10 sm:w-auto sm:max-w-none sm:min-w-[12rem] sm:px-10 sm:py-4 sm:text-xs sm:tracking-[0.2em]"
       >
         {{ content.chartersButton }}
       </a>

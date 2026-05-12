@@ -1,5 +1,14 @@
 export const environment = {
   production: false,
+  /**
+   * Split marketing vs admin by hostname (leave empty for local dev — all routes on one host).
+   * Example: publicHostnames: ['www.example.com','example.com'], adminHostnames: ['admin.example.com']
+   */
+  publicHostnames: [] as string[],
+  adminHostnames: [] as string[],
+  /** Full origin for redirects from public → admin (e.g. https://admin.example.com) */
+  publicSiteOrigin: '',
+  adminSiteOrigin: '',
   /** Firebase web app config — replace with values from Project settings (General). */
   firebase: {
     apiKey: 'AIzaSyCkAyT335OBp7ooP4SlIs4K5t-iAb37qSk',
@@ -9,7 +18,7 @@ export const environment = {
     messagingSenderId: '279570530036',
     appId: '1:279570530036:web:3fdd7484bd91c30059a8a1',
   },
-  /** JSON file path in the default Storage bucket (homepage copy). */
+  /** Legacy: homepage JSON in Storage (site now uses Firestore `site/homePage`). */
   homePageStoragePath: 'cms/home-page.json',
   /** Cloud Functions user-management is disabled until Blaze plan deploys functions. */
   adminFunctionsEnabled: false,
