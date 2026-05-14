@@ -6,12 +6,29 @@ function clearCorruptFirebaseStorage(storage: Storage): void {
   const keysToRemove: string[] = [];
   for (let i = 0; i < storage.length; i += 1) {
     const key = storage.key(i);
-    if (!key || !key.startsWith('firebase:')) {
+    if (!key) {
+      continue;
+    }
+    const isFirebaseBrowserKey =
+      key.startsWith('firebase:') || key.startsWith('firebaseLocalStorage');
+    if (!isFirebaseBrowserKey) {
       continue;
     }
     const value = storage.getItem(key);
-    if (value?.trim() === '[object Object]') {
+    if (value == null) {
+      continue;
+    }
+    const trimmed = value.trim();
+    if (trimmed === '[object Object]' || trimmed === 'undefined') {
       keysToRemove.push(key);
+      continue;
+    }
+    if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+      try {
+        JSON.parse(trimmed);
+      } catch {
+        keysToRemove.push(key);
+      }
     }
   }
   keysToRemove.forEach((key) => storage.removeItem(key));
