@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Auth, signOut } from '@angular/fire/auth';
 
@@ -14,13 +14,21 @@ type FieldStyle = {
   size: string;
 };
 
+type EditorToastVariant = 'success' | 'error' | 'info';
+
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html'
 })
-export class EditorComponent implements OnInit {
-  hasChanges = false;
-  saveMessage = '';
+export class EditorComponent implements OnInit, OnDestroy {
+  private readonly maxUndoSteps = 45;
+  private readonly pastForm: HomePageContent[] = [];
+  private readonly futureForm: HomePageContent[] = [];
+  private restoringFromHistory = false;
+  private toastClearId: ReturnType<typeof setTimeout> | null = null;
+
+  toastMessage = '';
+  toastVariant: EditorToastVariant = 'info';
   isBold = false;
   isItalic = true;
   isUnderline = false;
@@ -45,19 +53,37 @@ export class EditorComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    if (this.toastClearId !== null) {
+      clearTimeout(this.toastClearId);
+      this.toastClearId = null;
+    }
+  }
+
+  get canUndo(): boolean {
+    return this.pastForm.length > 0;
+  }
+
+  get canRedo(): boolean {
+    return this.futureForm.length > 0;
+  }
+
   private async applyLoadedContent(data: HomePageContent): Promise<void> {
+    this.clearUndoStacks();
     const draft = await this.homeContentStorage.loadDraftFromFirestore();
     if (draft) {
       this.form = this.cloneContent(draft);
       this.baseline = this.cloneContent(data);
-      this.hasChanges = true;
-      this.saveMessage = 'Draft restored from Firestore.';
+      this.showToast('Draft restored from Firestore.', 'info');
       return;
     }
     this.form = this.cloneContent(data);
     this.baseline = this.cloneContent(data);
-    this.hasChanges = false;
-    this.saveMessage = '';
+  }
+
+  /** True when published snapshot differs from the form (avoids a stale `hasChanges` flag blocking Publish). */
+  get hasUnpublishedEdits(): boolean {
+    return JSON.stringify(this.form) !== JSON.stringify(this.baseline);
   }
 
   async logout(): Promise<void> {
@@ -134,34 +160,119 @@ export class EditorComponent implements OnInit {
 
   onInput(key: keyof HomePageContent, event: Event): void {
     const target = event.target as HTMLInputElement | HTMLTextAreaElement;
+    this.pushHistoryBeforeChange();
     this.form = { ...this.form, [key]: target.value };
-    this.hasChanges = true;
     this.homeContentStorage.saveDraft(this.form);
-    this.saveMessage = 'Draft saved.';
+  }
+
+  undo(): void {
+    if (!this.canUndo) {
+      this.showToast('Nothing to undo.', 'info', 2200);
+      return;
+    }
+    this.restoringFromHistory = true;
+    this.futureForm.push(this.cloneContent(this.form));
+    const prev = this.pastForm.pop()!;
+    this.form = prev;
+    this.restoringFromHistory = false;
+    this.homeContentStorage.saveDraft(this.form);
+    this.showToast('Undone.', 'info', 2200);
+  }
+
+  redo(): void {
+    if (!this.canRedo) {
+      this.showToast('Nothing to redo.', 'info', 2200);
+      return;
+    }
+    this.restoringFromHistory = true;
+    this.pastForm.push(this.cloneContent(this.form));
+    const next = this.futureForm.pop()!;
+    this.form = next;
+    this.restoringFromHistory = false;
+    this.homeContentStorage.saveDraft(this.form);
+    this.showToast('Redone.', 'info', 2200);
   }
 
   async discardChanges(): Promise<void> {
+    this.clearUndoStacks();
     this.form = this.cloneContent(this.baseline);
-    this.hasChanges = false;
     await this.homeContentStorage.clearDraft();
-    this.saveMessage = 'Changes discarded.';
+    this.showToast('Changes discarded.', 'info');
   }
 
   async publishChanges(): Promise<void> {
-    if (!this.hasChanges) {
+    if (!this.hasUnpublishedEdits) {
+      this.showToast('No changes to publish.', 'info');
       return;
     }
-    this.saveMessage = 'Publishing…';
+    this.showToast('Publishing…', 'info', 2000);
     try {
       await this.homeContentStorage.save(this.form);
       this.baseline = this.cloneContent(this.form);
-      this.hasChanges = false;
+      this.clearUndoStacks();
       await this.homeContentStorage.clearDraft();
-      this.saveMessage = 'Published to Firestore.';
-    } catch {
-      this.saveMessage =
-        'Could not save. Sign in to the editor and deploy Firestore rules so signed-in users can write site/homePage.';
+      this.showToast('Published. Reload the public site to see updates.', 'success');
+    } catch (err: unknown) {
+      console.error('Publish to Firestore failed', err);
+      const code =
+        typeof err === 'object' &&
+        err !== null &&
+        'code' in err &&
+        typeof (err as { code?: unknown }).code === 'string'
+          ? (err as { code: string }).code
+          : '';
+      if (code === 'permission-denied') {
+        this.showToast(
+          'Permission denied. Deploy Firestore rules and sign in with an allowed account.',
+          'error'
+        );
+      } else {
+        this.showToast(
+          'Could not publish. Sign in, check the console, and confirm Firestore rules allow writes to site/homePage.',
+          'error'
+        );
+      }
     }
+  }
+
+  dismissToast(): void {
+    if (this.toastClearId !== null) {
+      clearTimeout(this.toastClearId);
+      this.toastClearId = null;
+    }
+    this.toastMessage = '';
+  }
+
+  showToast(message: string, variant: EditorToastVariant = 'info', durationMs?: number): void {
+    if (this.toastClearId !== null) {
+      clearTimeout(this.toastClearId);
+      this.toastClearId = null;
+    }
+    this.toastMessage = message;
+    this.toastVariant = variant;
+    const ms =
+      durationMs ??
+      (variant === 'error' ? 8000 : variant === 'success' ? 5500 : 4200);
+    this.toastClearId = setTimeout(() => {
+      this.toastClearId = null;
+      this.toastMessage = '';
+    }, ms);
+  }
+
+  private pushHistoryBeforeChange(): void {
+    if (this.restoringFromHistory) {
+      return;
+    }
+    this.pastForm.push(this.cloneContent(this.form));
+    if (this.pastForm.length > this.maxUndoSteps) {
+      this.pastForm.shift();
+    }
+    this.futureForm.length = 0;
+  }
+
+  private clearUndoStacks(): void {
+    this.pastForm.length = 0;
+    this.futureForm.length = 0;
   }
 
   get previewClassMap(): Record<string, boolean> {

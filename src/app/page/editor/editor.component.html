@@ -26,7 +26,7 @@
           <button
             type="button"
             class="rounded-md bg-cv-green px-5 py-2 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-white shadow-sm transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-            [disabled]="!hasChanges"
+            [disabled]="!hasUnpublishedEdits"
             (click)="publishChanges()"
           >
             Publish Changes
@@ -156,8 +156,26 @@
           </div>
 
           <div class="flex items-center gap-1 border-l border-cv-sage-accent/20 pl-3">
-            <button type="button" class="rounded px-2 py-1 text-sm text-cv-grey transition hover:bg-cv-green/10 hover:text-cv-green" aria-label="Undo" (mousedown)="keepFieldFocus($event)">↺</button>
-            <button type="button" class="rounded px-2 py-1 text-sm text-cv-grey transition hover:bg-cv-green/10 hover:text-cv-green" aria-label="Redo" (mousedown)="keepFieldFocus($event)">↻</button>
+            <button
+              type="button"
+              class="rounded px-2 py-1 text-sm transition hover:bg-cv-green/10 hover:text-cv-green disabled:cursor-not-allowed disabled:opacity-40"
+              [disabled]="!canUndo"
+              aria-label="Undo"
+              (mousedown)="keepFieldFocus($event)"
+              (click)="undo()"
+            >
+              ↺
+            </button>
+            <button
+              type="button"
+              class="rounded px-2 py-1 text-sm transition hover:bg-cv-green/10 hover:text-cv-green disabled:cursor-not-allowed disabled:opacity-40"
+              [disabled]="!canRedo"
+              aria-label="Redo"
+              (mousedown)="keepFieldFocus($event)"
+              (click)="redo()"
+            >
+              ↻
+            </button>
           </div>
         </div>
       </div>
@@ -481,10 +499,30 @@
           />
         </article>
       </div>
-
-      <p *ngIf="saveMessage" class="mt-3 text-xs text-cv-muted">{{ saveMessage }}</p>
     </section>
   </main>
 
   <app-site-footer></app-site-footer>
+
+  <div
+    *ngIf="toastMessage"
+    class="pointer-events-auto fixed bottom-6 right-6 z-[100] flex max-w-[min(22rem,calc(100vw-2rem))] items-start gap-2 rounded-lg border px-4 py-3 text-sm shadow-card"
+    [attr.role]="toastVariant === 'error' ? 'alert' : 'status'"
+    [attr.aria-live]="toastVariant === 'error' ? 'assertive' : 'polite'"
+    [ngClass]="{
+      'border-cv-green/45 bg-cv-shell text-cv-ink': toastVariant === 'success',
+      'border-red-400/55 bg-red-50 text-red-950': toastVariant === 'error',
+      'border-cv-sage-accent/40 bg-cv-cream text-cv-charcoal': toastVariant === 'info'
+    }"
+  >
+    <p class="min-w-0 flex-1 leading-snug">{{ toastMessage }}</p>
+    <button
+      type="button"
+      class="shrink-0 rounded px-1.5 py-0.5 text-lg leading-none text-cv-muted hover:bg-black/5 hover:text-cv-charcoal"
+      (click)="dismissToast()"
+      aria-label="Dismiss notification"
+    >
+      ×
+    </button>
+  </div>
 </div>
