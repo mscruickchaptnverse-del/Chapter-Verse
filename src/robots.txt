@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://chaptnverse.com/sitemap.xml
+Sitemap: https://www.chaptnverse.com/sitemap-www.xml
